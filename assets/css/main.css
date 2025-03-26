@@ -1110,7 +1110,14 @@ input, select, textarea {
     z-index: -1; /* Sends the video behind other elements */
     object-fit: cover; /* Ensures it covers the entire viewport */
 }
-
+@media (max-width: 768px) { /* Adjust for mobile */
+#bg-video {
+	display: none;
+    }
+    #bg-image {
+      display: block;
+    }
+  }
 /* Wrapper */
 
 	#wrapper {
