@@ -1101,14 +1101,14 @@ input, select, textarea {
 /* BG */
 #myVideo {
     position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1; /* Sends the video behind other elements */
-    object-fit: cover; /* Ensures it covers the entire viewport */
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; /* Ensures the video fills the screen */
+    transform: translate(-50%, -50%); /* Centers the video */
+    z-index: -1; /* Keeps it behind the content */
+    opacity: 1;
 }
 @media (max-width: 768px) { /* Adjust for mobile */
 #bg-video {
