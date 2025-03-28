@@ -9,7 +9,7 @@ This is my personal portfolio website.
 - **About Section** – More details about my background and interests.
 - **Contact Section** – A form to get in touch with me via email.
 
-Tbh I have no idea what else I should put in it, for I'm quite new.
+Tbh I have no idea what else I should put in it, I'm quite new.
 
 ## Live Demo
 
