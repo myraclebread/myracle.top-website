@@ -1,59 +1,63 @@
-let currentTypewriterTimeouts = []; // Track all active timeouts
+let currentTypewriterTimeouts = [];
+const refreshButton = document.getElementById("refreshPoemBtn");
 
-// Function to clear any active typewriter effects
+// Clear typewriter effect in case it's interrupted
 function clearTypewriter() {
-  // Cancel all running timeouts
   currentTypewriterTimeouts.forEach(timeout => clearTimeout(timeout));
   currentTypewriterTimeouts = [];
 }
 
-// Typewriter effect function
-function typeWriterEffect(text, element, speed = 30) {
-  clearTypewriter(); // Stop any previous typewriter effect
-
-  element.textContent = ""; // Clear existing text
+// Typewriter effect with "onDone" callback
+function typeWriterEffect(text, element, speed = 30, onDone = () => {}) {
+  clearTypewriter();
+  element.textContent = "";
   let i = 0;
 
-  // Recursive function to simulate typing effect
   function type() {
     if (i < text.length) {
       element.textContent += text.charAt(i);
       const timeout = setTimeout(type, speed);
-      currentTypewriterTimeouts.push(timeout); // Track timeouts to clear them if needed
+      currentTypewriterTimeouts.push(timeout);
       i++;
+    } else {
+      onDone(); // Enable refresh when done
     }
   }
 
-  type(); // Start typing effect
+  type();
 }
 
-// Function to load a random poem
+// Load a random poem
 async function loadRandomPoem() {
   try {
-    const res = await fetch('https://myracle.top/poems/poems.json');
-    const poems = await res.json(); // Parse JSON
+    refreshButton.disabled = true; // Disable button during load
 
-    // Check if poems data is valid
-    if (!Array.isArray(poems) || poems.length === 0) {
-      throw new Error("Poems data is empty or invalid");
-    }
+    const res = await fetch('poems/poems.json');
+    const poems = await res.json();
+    const randomPoem = poems[Math.floor(Math.random() * poems.length)];
 
-    const randomPoem = poems[Math.floor(Math.random() * poems.length)]; // Pick a random poem
-
-    // Check if the poem has content
     if (!randomPoem || !randomPoem.content) {
       throw new Error("Poem content missing");
     }
 
-    // Set the poem title and apply typewriter effect for the content
     document.getElementById('poemTitle').textContent = randomPoem.title || "Untitled";
-    typeWriterEffect(randomPoem.content, document.getElementById('poemContent'));
+
+    typeWriterEffect(randomPoem.content, document.getElementById('poemContent'), 30, () => {
+      refreshButton.disabled = false; // Re-enable button after typing
+    });
+
   } catch (error) {
-    console.error('Error loading poem:', error); // Log the error
+    console.error('Error loading poem:', error);
     document.getElementById('poemTitle').textContent = "Error";
     document.getElementById('poemContent').textContent = "Could not load poem.";
   }
 }
 
-// Ensure the poem is loaded once the page is ready
+// Refresh on button click
+refreshButton.addEventListener('click', () => {
+  refreshButton.disabled = true; // Disable button immediately on click
+  loadRandomPoem();
+});
+
+// Load initial poem
 document.addEventListener("DOMContentLoaded", loadRandomPoem);
