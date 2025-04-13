@@ -30,8 +30,7 @@ function typeWriterEffect(text, element, speed = 30) {
 // Function to load a random poem
 async function loadRandomPoem() {
   try {
-    // Replace this URL with the correct path to your JSON on GitHub Pages
-    const res = await fetch('https://<username>.github.io/<repository-name>/poems/poems.json');
+    const res = await fetch('https://myracle.top/poems/poems.json');
     const poems = await res.json(); // Parse JSON
 
     // Check if poems data is valid
