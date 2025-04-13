@@ -1,63 +1,46 @@
-let currentTypewriterTimeouts = [];
-const refreshButton = document.getElementById("refreshPoemBtn");
-
-// Clear typewriter effect in case it's interrupted
-function clearTypewriter() {
-  currentTypewriterTimeouts.forEach(timeout => clearTimeout(timeout));
-  currentTypewriterTimeouts = [];
-}
-
-// Typewriter effect with "onDone" callback
-function typeWriterEffect(text, element, speed = 30, onDone = () => {}) {
-  clearTypewriter();
-  element.textContent = "";
-  let i = 0;
-
-  function type() {
-    if (i < text.length) {
-      element.textContent += text.charAt(i);
-      const timeout = setTimeout(type, speed);
-      currentTypewriterTimeouts.push(timeout);
-      i++;
-    } else {
-      onDone(); // Enable refresh when done
-    }
-  }
-
-  type();
-}
-
-// Load a random poem
 async function loadRandomPoem() {
-  try {
-    refreshButton.disabled = true; // Disable button during load
+  const button = document.getElementById('refreshPoemBtn');
+  button.disabled = true; // Disable while loading
 
+  try {
     const res = await fetch('poems/poems.json');
     const poems = await res.json();
     const randomPoem = poems[Math.floor(Math.random() * poems.length)];
 
-    if (!randomPoem || !randomPoem.content) {
-      throw new Error("Poem content missing");
-    }
-
-    document.getElementById('poemTitle').textContent = randomPoem.title || "Untitled";
-
-    typeWriterEffect(randomPoem.content, document.getElementById('poemContent'), 30, () => {
-      refreshButton.disabled = false; // Re-enable button after typing
+    document.getElementById('poemTitle').textContent = randomPoem.title;
+    typeWriterEffect(randomPoem.content, document.getElementById('poemContent'), () => {
+      button.disabled = false; // Re-enable after typewriter is done
     });
 
   } catch (error) {
     console.error('Error loading poem:', error);
     document.getElementById('poemTitle').textContent = "Error";
     document.getElementById('poemContent').textContent = "Could not load poem.";
+    button.disabled = false;
   }
 }
 
-// Refresh on button click
-refreshButton.addEventListener('click', () => {
-  refreshButton.disabled = true; // Disable button immediately on click
-  loadRandomPoem();
-});
+function typeWriterEffect(text, element, callback, speed = 30) {
+  element.textContent = "";
+  let i = 0;
+  function type() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    } else if (callback) {
+      callback(); // Call after typewriter finishes
+    }
+  }
+  type();
+}
 
-// Load initial poem
-document.addEventListener("DOMContentLoaded", loadRandomPoem);
+document.addEventListener("DOMContentLoaded", () => {
+  loadRandomPoem();
+
+  const refreshBtn = document.getElementById('refreshPoemBtn');
+  refreshBtn.addEventListener('click', () => {
+    refreshBtn.disabled = true; // Disable again when clicked
+    loadRandomPoem();
+  });
+});
