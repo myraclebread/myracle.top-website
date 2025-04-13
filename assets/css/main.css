@@ -1597,3 +1597,30 @@ input, select, textarea {
 		body.is-preload #footer {
 			opacity: 0;
 		}
+
+#poemContainer {
+  margin-top: 1em;
+}
+
+#poemContent {
+  white-space: pre-wrap;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1em;
+  border-left: 2px solid #aaa;
+  padding-left: 1em;
+  margin-bottom: 1em;
+}
+
+button {
+  background-color: #3d3d3d;
+  color: #fff;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #666;
+}
