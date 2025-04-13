@@ -1,15 +1,27 @@
+let isTyping = false;
+
 async function loadRandomPoem() {
   const button = document.getElementById('refreshPoemBtn');
+  if (isTyping) return; // Prevent glitch from fast clicking
+
   button.disabled = true;
+  isTyping = true;
 
   try {
-    const res = await fetch('poems/poems.json');
+    const res = await fetch(`poems/poems.json?v=${Date.now()}`);
     const poems = await res.json();
     const randomPoem = poems[Math.floor(Math.random() * poems.length)];
 
-    document.getElementById('poemTitle').textContent = randomPoem.title;
-    typeWriterEffect(randomPoem.content, document.getElementById('poemContent'), () => {
-      button.disabled = false; // Enable only after typing finishes
+    const titleEl = document.getElementById('poemTitle');
+    const contentEl = document.getElementById('poemContent');
+
+    titleEl.textContent = '';
+    contentEl.textContent = '';
+
+    titleEl.textContent = randomPoem.title;
+    typeWriterEffect(randomPoem.content, contentEl, () => {
+      button.disabled = false;
+      isTyping = false;
     });
 
   } catch (error) {
@@ -17,6 +29,7 @@ async function loadRandomPoem() {
     document.getElementById('poemTitle').textContent = "Error";
     document.getElementById('poemContent').textContent = "Could not load poem.";
     button.disabled = false;
+    isTyping = false;
   }
 }
 
