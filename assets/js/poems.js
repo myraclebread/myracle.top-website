@@ -1,6 +1,6 @@
 async function loadRandomPoem() {
   const button = document.getElementById('refreshPoemBtn');
-  button.disabled = true; // Disable while loading
+  button.disabled = true;
 
   try {
     const res = await fetch('poems/poems.json');
@@ -9,7 +9,7 @@ async function loadRandomPoem() {
 
     document.getElementById('poemTitle').textContent = randomPoem.title;
     typeWriterEffect(randomPoem.content, document.getElementById('poemContent'), () => {
-      button.disabled = false; // Re-enable after typewriter is done
+      button.disabled = false; // Enable only after typing finishes
     });
 
   } catch (error) {
@@ -28,8 +28,8 @@ function typeWriterEffect(text, element, callback, speed = 30) {
       element.textContent += text.charAt(i);
       i++;
       setTimeout(type, speed);
-    } else if (callback) {
-      callback(); // Call after typewriter finishes
+    } else {
+      if (typeof callback === 'function') callback();
     }
   }
   type();
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const refreshBtn = document.getElementById('refreshPoemBtn');
   refreshBtn.addEventListener('click', () => {
-    refreshBtn.disabled = true; // Disable again when clicked
+    refreshBtn.disabled = true;
     loadRandomPoem();
   });
 });
