@@ -27,3 +27,29 @@ async function loadRandomPoem() {
   }
   
   document.addEventListener("DOMContentLoaded", loadRandomPoem);
+
+let currentTypewriterTimeouts = [];
+
+function clearTypewriter() {
+  // Cancel all running timeouts
+  currentTypewriterTimeouts.forEach(timeout => clearTimeout(timeout));
+  currentTypewriterTimeouts = [];
+}
+
+function typeWriterEffect(text, element, speed = 30) {
+  clearTypewriter(); // Stop previous typewriter
+
+  element.textContent = "";
+  let i = 0;
+
+  function type() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      const timeout = setTimeout(type, speed);
+      currentTypewriterTimeouts.push(timeout);
+      i++;
+    }
+  }
+
+  type();
+}
