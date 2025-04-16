@@ -1,50 +1,50 @@
-let isTyping = false;
+let currentTyping = null;
+let skipTyping = false;
 
 async function loadRandomPoem() {
-  const button = document.getElementById('refreshPoemBtn');
-  if (isTyping) return; // Prevent glitch from fast clicking
-
-  button.disabled = true;
-  isTyping = true;
-
   try {
-    const res = await fetch(`poems/poems.json?v=${Date.now()}`);
+    const res = await fetch('poems/poems.json');
     const poems = await res.json();
     const randomPoem = poems[Math.floor(Math.random() * poems.length)];
 
-    const titleEl = document.getElementById('poemTitle');
-    const contentEl = document.getElementById('poemContent');
+    document.getElementById('poemTitle').textContent = randomPoem.title;
 
-    titleEl.textContent = '';
-    contentEl.textContent = '';
+    // Stop ongoing typing
+    if (currentTyping) {
+      clearTimeout(currentTyping);
+      currentTyping = null;
+    }
 
-    titleEl.textContent = randomPoem.title;
-    typeWriterEffect(randomPoem.content, contentEl, () => {
-      button.disabled = false;
-      isTyping = false;
-    });
+    skipTyping = false;
+    typeWriterEffect(randomPoem.content, document.getElementById('poemContent'));
 
   } catch (error) {
     console.error('Error loading poem:', error);
     document.getElementById('poemTitle').textContent = "Error";
     document.getElementById('poemContent').textContent = "Could not load poem.";
-    button.disabled = false;
-    isTyping = false;
   }
 }
 
-function typeWriterEffect(text, element, callback, speed = 30) {
+function typeWriterEffect(text, element, speed = 30) {
   element.textContent = "";
   let i = 0;
+
   function type() {
+    if (skipTyping) {
+      element.textContent = text;
+      currentTyping = null;
+      return;
+    }
+
     if (i < text.length) {
       element.textContent += text.charAt(i);
       i++;
-      setTimeout(type, speed);
+      currentTyping = setTimeout(type, speed);
     } else {
-      if (typeof callback === 'function') callback();
+      currentTyping = null;
     }
   }
+
   type();
 }
 
@@ -53,7 +53,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const refreshBtn = document.getElementById('refreshPoemBtn');
   refreshBtn.addEventListener('click', () => {
-    refreshBtn.disabled = true;
+    if (currentTyping) {
+      clearTimeout(currentTyping);
+      currentTyping = null;
+    }
     loadRandomPoem();
+  });
+
+  const skipBtn = document.getElementById('skipTypingBtn');
+  skipBtn.addEventListener('click', () => {
+    skipTyping = true;
   });
 });
