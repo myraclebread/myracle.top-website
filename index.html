@@ -120,39 +120,77 @@
 
 			</div>
 
-  		<!-- The video -->
-		<video autoplay muted loop playsinline id="myVideo" oncontextmenu="return false;">
-		    <source src="videos/video.mp4" type="video/mp4">
-		    Your browser does not support the video tag.
-		</video>
+  		<!-- The video with poster fallback -->
+			<video autoplay muted loop playsinline preload="auto" id="myVideo" oncontextmenu="return false;" poster="images/video-poster.jpg">
+				<source src="videos/video.mp4" type="video/mp4">
+				<source src="videos/video.webm" type="video/webm">
+				Your browser does not support the video tag.
+			</video>
+
+		<!-- Simple play button overlay (hidden by default) -->
+		 <div id="videoOverlay" style="display: none;">
+			    <button id="playVideoBtn" style="position: fixed; top: 20px; right: 20px; z-index: 10000; padding: 10px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 5px; cursor: pointer;">
+					▶ Play Background
+				</button>
+		</div>
+
 
 		<!-- Scripts -->
 			<script>
-			// Video control prevention
+			// Universal browser autoplay fix
 			document.addEventListener('DOMContentLoaded', function() {
-				const video = document.getElementById('myVideo');
+			    const video = document.getElementById('myVideo');
+				const overlay = document.getElementById('videoOverlay');
+				const playBtn = document.getElementById('playVideoBtn');
 				
-				// Prevent right-click context menu
-				video.addEventListener('contextmenu', function(e) {
-			       	e.preventDefault();
-				   	return false;
-		    	});
-
-				// Disable controls
-				video.controls = false;
-
-				// Prevent keyboard controls
-				video.addEventListener('keydown', function(e) {
-					if ([32, 37, 39].includes(e.keyCode)) { // Space, left, right arrows
-						e.preventDefault();
-					}
-				});
-		
-				// Ensure video restarts if it ever stops
-				video.addEventListener('ended', function() {
-					video.currentTime = 0;
-					video.play();
-				});
+				// Function to attempt video play
+				function attemptPlay() {
+					video.play().then(() => {
+						// Success - hide overlay
+						overlay.style.display = 'none';
+						console.log('Video autoplay successful');
+					}).catch(error => {
+            			// Failed - show play button
+            			console.log('Autoplay blocked:', error);
+            			overlay.style.display = 'block';
+        			});
+    			}
+    
+    			// First attempt to play
+    			attemptPlay();
+    
+    			// Play button click handler
+    			playBtn.addEventListener('click', function() {
+					video.play().then(() => {
+						overlay.style.display = 'none';
+        			});
+    			});
+    
+    			// Try to play when user interacts with the page
+    			document.addEventListener('click', function() {
+        			attemptPlay();
+    			}, { once: true }); // Only try once
+    
+    			// Try to play when page becomes visible
+    			document.addEventListener('visibilitychange', function() {
+    			    if (!document.hidden && video.paused) {
+            			attemptPlay();
+        			}
+    			});
+    
+    			// Prevent video controls
+    			video.addEventListener('contextmenu', function(e) {
+        			e.preventDefault();
+					return false;
+    			});
+    
+    			video.controls = false;
+    
+    			// Ensure looping works
+    			video.addEventListener('ended', function() {
+    			    video.currentTime = 0;
+    			    video.play();
+    			});
 			});
 			</script>
 			<script src="assets/js/jquery.min.js"></script>
