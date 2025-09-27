@@ -1,6 +1,6 @@
 let poems = [];
 let displayedPoems = [];
-let typingInterval; // Store the interval ID for the typing effect
+let typingInterval = null; // Store the interval ID for the typing effect
 
 async function loadPoems() {
   try {
@@ -24,6 +24,12 @@ async function loadRandomPoem() {
     await loadPoems(); // Load poems if not already loaded
   }
 
+  // Clear any existing typing effect
+  if (typingInterval) {
+    clearInterval(typingInterval);
+    typingInterval = null;
+  }
+
   // Ensure poem is not repeated
   let randomPoem;
   do {
@@ -39,8 +45,14 @@ async function loadRandomPoem() {
   }
 
   document.getElementById('poemTitle').textContent = randomPoem.title;
+  
+  // Add typing cursor class
+  document.getElementById('poemContent').classList.add('typing');
+  
   typeWriterEffect(randomPoem.content, document.getElementById('poemContent'), () => {
     button.disabled = false; // Enable button after typing effect finishes
+    // Remove typing cursor when done
+    document.getElementById('poemContent').classList.remove('typing');
   });
 }
 
@@ -59,6 +71,7 @@ function typeWriterEffect(text, element, callback, speed = 30) {
       i++;
     } else {
       clearInterval(typingInterval); // Ensure to stop typing when done
+      typingInterval = null;
       if (typeof callback === 'function') callback();
     }
   }
@@ -69,19 +82,45 @@ function typeWriterEffect(text, element, callback, speed = 30) {
 // Skip the typewriter effect
 function skipTypewriter() {
   const poemContent = document.getElementById('poemContent');
-  const randomPoem = poems.find(poem => poem.title === document.getElementById('poemTitle').textContent);
+  const currentTitle = document.getElementById('poemTitle').textContent;
+  const randomPoem = poems.find(poem => poem.title === currentTitle);
+  
+  if (!randomPoem) return;
   
   // Stop the typewriter effect immediately
-  clearInterval(typingInterval);
+  if (typingInterval) {
+    clearInterval(typingInterval);
+    typingInterval = null;
+  }
+  
+  // Remove typing cursor
+  poemContent.classList.remove('typing');
   
   // Directly show the full poem content
   poemContent.textContent = randomPoem.content;
   document.getElementById('refreshPoemBtn').disabled = false; // Enable the button after skipping
 }
 
+// Reset the poem when the poems section is navigated to
+function resetPoemForSection() {
+  // Clear any ongoing typing
+  if (typingInterval) {
+    clearInterval(typingInterval);
+    typingInterval = null;
+  }
+  
+  // Remove typing cursor
+  const poemContent = document.getElementById('poemContent');
+  poemContent.classList.remove('typing');
+  
+  // Load a fresh poem
+  loadRandomPoem();
+}
+
 // Event listeners for the buttons
 document.addEventListener("DOMContentLoaded", () => {
-  loadRandomPoem(); // Load the first poem on page load
+  // Load the first poem on page load
+  loadRandomPoem();
 
   const refreshBtn = document.getElementById('refreshPoemBtn');
   const skipBtn = document.getElementById('skipTypingBtn');
@@ -94,4 +133,17 @@ document.addEventListener("DOMContentLoaded", () => {
   skipBtn.addEventListener('click', () => {
     skipTypewriter();
   });
+
+  // Listen for navigation to the poems section (if using a SPA navigation)
+  // This will depend on how your site handles navigation
+  // Example for hash-based navigation:
+  window.addEventListener('hashchange', function() {
+    if (window.location.hash === '#poems') {
+      // Small delay to ensure section is visible
+      setTimeout(resetPoemForSection, 100);
+    }
+  });
 });
+
+// If your site uses a different navigation system, you might need to call
+// resetPoemForSection() when the poems section becomes active
