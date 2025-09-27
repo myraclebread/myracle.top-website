@@ -1118,6 +1118,7 @@ input, select, textarea {
       display: block;
     }
   }
+
 /* Fix for typing cursor - only show at end of text */
 #poemContent {
     position: relative;
