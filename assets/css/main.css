@@ -1118,6 +1118,23 @@ input, select, textarea {
       display: block;
     }
   }
+/* Fix for typing cursor - only show at end of text */
+#poemContent {
+    position: relative;
+    padding-right: 2px; /* Space for the cursor */
+}
+
+.typing::after {
+    content: '|';
+    animation: blink-caret 0.75s step-end infinite;
+    color: orange;
+    font-weight: bold;
+}
+
+@keyframes blink-caret {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
+}
 /* Wrapper */
 
 	#wrapper {
