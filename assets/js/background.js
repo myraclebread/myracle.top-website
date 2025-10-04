@@ -7,6 +7,9 @@ const particleCount = 18;
 let currentSection = 'intro';
 let targetBehavior = 'intro';
 let transitionProgress = 1;
+let gradientTransitionTimeout = null;
+let currentGradientSection = 'intro';
+let targetGradientSection = 'intro';
 
 // Gradient themes for each section - FIXED SYNTAX
 const gradientThemes = {
@@ -101,18 +104,40 @@ function createParticles() {
 
 function updateGradient(section) {
     const config = gradientThemes[section];
-    if (config && gradientEl) {
-        // Apply the new gradient but keep it hidden during transition
-        gradientEl.style.background = config.background;
-        gradientEl.style.animation = config.animation;
-        gradientEl.style.backgroundSize = config.size;
-        gradientEl.style.opacity = '0';
+    if (!config || !gradientEl) return;
+    
+    // Clear any pending transition
+    if (gradientTransitionTimeout) {
+        clearTimeout(gradientTransitionTimeout);
+        gradientTransitionTimeout = null;
+    }
+    
+    // Update target
+    targetGradientSection = section;
+    
+    // If we're already transitioning, just update the target
+    if (currentGradientSection !== targetGradientSection) {
+        // Start smooth transition
+        gradientEl.style.transition = 'opacity 0.8s ease';
+        gradientEl.style.opacity = '0.3'; // Fade out current
         
-        // Fade in the new gradient smoothly
-        setTimeout(() => {
-            gradientEl.style.transition = 'opacity 1.5s ease';
-            gradientEl.style.opacity = '0.8';
-        }, 50);
+        gradientTransitionTimeout = setTimeout(() => {
+            // Apply new gradient
+            const targetConfig = gradientThemes[targetGradientSection];
+            gradientEl.style.background = targetConfig.background;
+            gradientEl.style.animation = targetConfig.animation;
+            gradientEl.style.backgroundSize = targetConfig.size;
+            
+            // Fade in new gradient
+            gradientEl.style.opacity = '0';
+            setTimeout(() => {
+                gradientEl.style.transition = 'opacity 1.2s ease';
+                gradientEl.style.opacity = '0.8';
+                
+                currentGradientSection = targetGradientSection;
+                gradientTransitionTimeout = null;
+            }, 50);
+        }, 300);
     }
 }
 
