@@ -106,31 +106,39 @@ function updateGradient(section) {
     const config = gradientThemes[section];
     if (!config || !gradientEl) return;
     
-    // If we're already at this section, do nothing
-    if (currentGradientSection === section) return;
-    
     // Clear any pending transition
     if (gradientTransitionTimeout) {
         clearTimeout(gradientTransitionTimeout);
+        gradientTransitionTimeout = null;
     }
     
-    // Start transition immediately
-    gradientEl.style.transition = 'opacity 0.4s ease';
-    gradientEl.style.opacity = '0.2'; // Quick fade out
+    // Update target
+    targetGradientSection = section;
     
-    gradientTransitionTimeout = setTimeout(() => {
-        // Apply new gradient while faded out
-        gradientEl.style.background = config.background;
-        gradientEl.style.animation = config.animation;
-        gradientEl.style.backgroundSize = config.size;
-        
-        // Fade back in
+    // If we're already transitioning, just update the target
+    if (currentGradientSection !== targetGradientSection) {
+        // Start smooth transition
         gradientEl.style.transition = 'opacity 0.8s ease';
-        gradientEl.style.opacity = '0.8';
+        gradientEl.style.opacity = '0.3'; // Fade out current
         
-        currentGradientSection = section;
-        gradientTransitionTimeout = null;
-    }, 200);
+        gradientTransitionTimeout = setTimeout(() => {
+            // Apply new gradient
+            const targetConfig = gradientThemes[targetGradientSection];
+            gradientEl.style.background = targetConfig.background;
+            gradientEl.style.animation = targetConfig.animation;
+            gradientEl.style.backgroundSize = targetConfig.size;
+            
+            // Fade in new gradient
+            gradientEl.style.opacity = '0';
+            setTimeout(() => {
+                gradientEl.style.transition = 'opacity 1.2s ease';
+                gradientEl.style.opacity = '0.8';
+                
+                currentGradientSection = targetGradientSection;
+                gradientTransitionTimeout = null;
+            }, 50);
+        }, 300);
+    }
 }
 
 // Particle behavior based on section
