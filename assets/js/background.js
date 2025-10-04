@@ -102,15 +102,17 @@ function createParticles() {
 function updateGradient(section) {
     const config = gradientThemes[section];
     if (config && gradientEl) {
-        // Apply all gradient styles at once
-        gradientEl.style.cssText = `
-            background: ${config.background};
-            animation: ${config.animation};
-            background-size: ${config.size};
-            background-position: 0% 0%;
-            opacity: 0.8;
-        `;
-        console.log('Updated gradient to:', section, config.background);
+        // Apply the new gradient but keep it hidden during transition
+        gradientEl.style.background = config.background;
+        gradientEl.style.animation = config.animation;
+        gradientEl.style.backgroundSize = config.size;
+        gradientEl.style.opacity = '0';
+        
+        // Fade in the new gradient smoothly
+        setTimeout(() => {
+            gradientEl.style.transition = 'opacity 1.5s ease';
+            gradientEl.style.opacity = '0.8';
+        }, 50);
     }
 }
 
