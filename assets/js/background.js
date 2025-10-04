@@ -1,5 +1,6 @@
 // ===== BACKGROUND SYSTEM =====
-let gradientEl;
+let gradientCanvas;
+let gradientCtx;
 let canvas;
 let ctx;
 let particles = [];
@@ -7,61 +8,56 @@ const particleCount = 18;
 let currentSection = 'intro';
 let targetBehavior = 'intro';
 let transitionProgress = 1;
-let gradientTransitionTimeout = null;
-let currentGradientSection = 'intro';
-let targetGradientSection = 'intro';
+let currentGradient = { colors: [], positions: [] };
+let targetGradient = { colors: [], positions: [] };
+let gradientProgress = 1;
 
-// Gradient themes for each section - FIXED SYNTAX
-const gradientThemes = {
+// Define smooth gradient transitions
+const smoothGradients = {
     intro: {
-        background: `
-            radial-gradient(circle at 20% 30%, rgba(100, 80, 255, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 80% 70%, rgba(255, 100, 100, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 40% 90%, rgba(100, 200, 255, 0.3) 0%, transparent 50%),
-            linear-gradient(135deg, #0a0a2a 0%, #000000 100%)
-        `,
-        animation: 'gradientShift 20s ease infinite',
-        size: '400% 400%'
+        colors: [
+            {r: 10, g: 10, b: 42},    // #0a0a2a
+            {r: 100, g: 80, b: 255},  // Purple
+            {r: 255, g: 100, b: 100}, // Pink
+            {r: 100, g: 200, b: 255}  // Light blue
+        ],
+        positions: [0, 0.3, 0.7, 1]
     },
     work: {
-        background: `
-            radial-gradient(circle at 10% 20%, rgba(80, 120, 255, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 90% 40%, rgba(0, 200, 255, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 50% 80%, rgba(0, 100, 200, 0.3) 0%, transparent 50%),
-            linear-gradient(45deg, #001122 0%, #000811 100%)
-        `,
-        animation: 'gradientShift 15s ease infinite',
-        size: '400% 400%'
+        colors: [
+            {r: 0, g: 17, b: 34},     // #001122
+            {r: 80, g: 120, b: 255},  // Blue
+            {r: 0, g: 200, b: 255},   // Cyan
+            {r: 0, g: 100, b: 200}    // Dark blue
+        ],
+        positions: [0, 0.3, 0.7, 1]
     },
     resume: {
-        background: `
-            radial-gradient(circle at 30% 20%, rgba(120, 180, 255, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(80, 160, 255, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 50% 90%, rgba(60, 140, 255, 0.3) 0%, transparent 50%),
-            linear-gradient(135deg, #001a33 0%, #000000 100%)
-        `,
-        animation: 'gradientShift 12s ease infinite',
-        size: '400% 400%'
+        colors: [
+            {r: 0, g: 26, b: 51},     // #001a33
+            {r: 120, g: 180, b: 255}, // Light blue
+            {r: 80, g: 160, b: 255},  // Medium blue
+            {r: 60, g: 140, b: 255}   // Dark blue
+        ],
+        positions: [0, 0.3, 0.7, 1]
     },
     poems: {
-        background: `
-            radial-gradient(circle at 30% 20%, rgba(180, 80, 255, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(255, 100, 200, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 50% 90%, rgba(255, 150, 255, 0.3) 0%, transparent 50%),
-            linear-gradient(225deg, #1a0a2a 0%, #110022 50%, #000000 100%)
-        `,
-        animation: 'gradientFlow 25s linear infinite',
-        size: '200% 200%'
+        colors: [
+            {r: 26, g: 10, b: 42},    // #1a0a2a
+            {r: 180, g: 80, b: 255},  // Purple
+            {r: 255, g: 100, b: 200}, // Pink
+            {r: 255, g: 150, b: 255}  // Light pink
+        ],
+        positions: [0, 0.3, 0.7, 1]
     },
     contact: {
-        background: `
-            radial-gradient(circle at 20% 50%, rgba(100, 255, 150, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 80% 30%, rgba(0, 255, 200, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 60% 70%, rgba(150, 255, 100, 0.3) 0%, transparent 50%),
-            linear-gradient(135deg, #002200 0%, #001100 50%, #000000 100%)
-        `,
-        animation: 'gradientPulse 12s ease-in-out infinite',
-        size: '200% 200%'
+        colors: [
+            {r: 0, g: 34, b: 0},      // #002200
+            {r: 100, g: 255, b: 150}, // Green
+            {r: 0, g: 255, b: 200},   // Teal
+            {r: 150, g: 255, b: 100}  // Light green
+        ],
+        positions: [0, 0.3, 0.7, 1]
     }
 };
 
@@ -74,7 +70,87 @@ const behaviors = {
     contact: { color: 'hsl(120, 70%, 60%)', speed: 0.9, connectionDistance: 160, formation: 'network' }
 };
 
-// Set canvas size
+// ===== GRADIENT CANVAS SYSTEM =====
+function initGradientCanvas() {
+    gradientCanvas = document.createElement('canvas');
+    gradientCanvas.id = 'gradient-canvas';
+    gradientCanvas.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1000;
+        opacity: 0.8;
+    `;
+    document.body.appendChild(gradientCanvas);
+    
+    gradientCtx = gradientCanvas.getContext('2d');
+    resizeGradientCanvas();
+    window.addEventListener('resize', resizeGradientCanvas);
+    
+    // Set initial gradient
+    currentGradient = {...smoothGradients.intro};
+    targetGradient = {...smoothGradients.intro};
+    drawGradient();
+}
+
+function resizeGradientCanvas() {
+    if (gradientCanvas) {
+        gradientCanvas.width = window.innerWidth;
+        gradientCanvas.height = window.innerHeight;
+        drawGradient();
+    }
+}
+
+function drawGradient() {
+    if (!gradientCtx) return;
+    
+    const width = gradientCanvas.width;
+    const height = gradientCanvas.height;
+    const gradient = gradientCtx.createLinearGradient(0, 0, width, height);
+    
+    // Interpolate between current and target gradients
+    for (let i = 0; i < currentGradient.colors.length; i++) {
+        const currentColor = currentGradient.colors[i];
+        const targetColor = targetGradient.colors[i];
+        const position = currentGradient.positions[i];
+        
+        // Smooth color interpolation
+        const r = Math.round(currentColor.r + (targetColor.r - currentColor.r) * gradientProgress);
+        const g = Math.round(currentColor.g + (targetColor.g - currentColor.g) * gradientProgress);
+        const b = Math.round(currentColor.b + (targetColor.b - currentColor.b) * gradientProgress);
+        
+        gradient.addColorStop(position, `rgb(${r}, ${g}, ${b})`);
+    }
+    
+    gradientCtx.fillStyle = gradient;
+    gradientCtx.fillRect(0, 0, width, height);
+}
+
+function updateGradient(section) {
+    if (smoothGradients[section]) {
+        targetGradient = {...smoothGradients[section]};
+        gradientProgress = 0;
+        
+        // Start smooth transition
+        function animateGradient() {
+            if (gradientProgress < 1) {
+                gradientProgress += 0.02;
+                drawGradient();
+                requestAnimationFrame(animateGradient);
+            } else {
+                // Transition complete
+                currentGradient = {...targetGradient};
+                gradientProgress = 1;
+                drawGradient();
+            }
+        }
+        animateGradient();
+    }
+}
+
+// ===== PARTICLE SYSTEM =====
 function resizeCanvas() {
     if (canvas) {
         canvas.width = window.innerWidth;
@@ -82,7 +158,6 @@ function resizeCanvas() {
     }
 }
 
-// Create particles
 function createParticles() {
     particles = [];
     for (let i = 0; i < particleCount; i++) {
@@ -102,38 +177,6 @@ function createParticles() {
     }
 }
 
-function updateGradient(section) {
-    const config = gradientThemes[section];
-    if (!config || !gradientEl) return;
-    
-    // If we're already at this section, do nothing
-    if (currentGradientSection === section) return;
-    
-    // Clear any pending transition
-    if (gradientTransitionTimeout) {
-        clearTimeout(gradientTransitionTimeout);
-    }
-    
-    // Start transition immediately
-    gradientEl.style.transition = 'opacity 0.4s ease';
-    gradientEl.style.opacity = '0.2'; // Quick fade out
-    
-    gradientTransitionTimeout = setTimeout(() => {
-        // Apply new gradient while faded out
-        gradientEl.style.background = config.background;
-        gradientEl.style.animation = config.animation;
-        gradientEl.style.backgroundSize = config.size;
-        
-        // Fade back in
-        gradientEl.style.transition = 'opacity 0.8s ease';
-        gradientEl.style.opacity = '0.8';
-        
-        currentGradientSection = section;
-        gradientTransitionTimeout = null;
-    }, 200);
-}
-
-// Particle behavior based on section
 function updateParticleBehavior(particle, behavior) {
     const behaviorConfig = behaviors[behavior];
     
@@ -208,7 +251,6 @@ function updateParticleBehavior(particle, behavior) {
     }
 }
 
-// Color interpolation
 function interpolateColor(color1, color2, progress) {
     const hsl1 = color1.match(/\d+/g).map(Number);
     const hsl2 = color2.match(/\d+/g).map(Number);
@@ -305,7 +347,7 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-// Smooth background transitions for article navigation
+// ===== NAVIGATION DETECTION =====
 function setupSmoothBackgroundTransitions() {
     let lastActiveArticle = null;
     
@@ -365,7 +407,7 @@ function setupSmoothBackgroundTransitions() {
         const link = e.target.closest('a');
         if (link && link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
             const section = link.getAttribute('href').substring(1);
-            if (gradientThemes[section]) {
+            if (smoothGradients[section]) {
                 targetBehavior = section;
                 transitionProgress = 0;
                 updateGradient(section);
@@ -374,24 +416,15 @@ function setupSmoothBackgroundTransitions() {
     });
 }
 
-// Detect ESC key to reset background
-function setupEscapeKeyDetection() {
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            targetBehavior = 'intro';
-            transitionProgress = 0;
-            updateGradient('intro');
-        }
-    });
-}
-
-// Initialize background when page loads
+// ===== INITIALIZATION =====
 function initBackground() {
-    gradientEl = document.getElementById('gradient-bg');
-    canvas = document.getElementById('particles-bg');
+    // Initialize gradient canvas
+    initGradientCanvas();
     
-    if (!gradientEl || !canvas) {
-        console.error('Background elements not found');
+    // Initialize particle canvas
+    canvas = document.getElementById('particles-bg');
+    if (!canvas) {
+        console.error('Particles canvas not found');
         return;
     }
     
@@ -403,7 +436,7 @@ function initBackground() {
     
     // Set initial background based on current URL
     const initialSection = window.location.hash.substring(1);
-    if (gradientThemes[initialSection]) {
+    if (smoothGradients[initialSection]) {
         targetBehavior = initialSection;
         currentSection = initialSection;
         updateGradient(initialSection);
@@ -421,62 +454,11 @@ function initBackground() {
     
     // Set up smooth background transitions
     setupSmoothBackgroundTransitions();
-    
-    // Listen for navigation clicks
-    document.addEventListener('click', function(e) {
-        const link = e.target.closest('a');
-        if (link && link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
-            const section = link.getAttribute('href').substring(1);
-            if (gradientThemes[section]) {
-                targetBehavior = section;
-                transitionProgress = 0;
-                updateGradient(section);
-            }
-        }
-    });
-}
-
-// Add gradient animations to the page
-function addGradientAnimations() {
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        @keyframes gradientPulse {
-            0%, 100% { background-size: 200% 200%; opacity: 0.7; }
-            50% { background-size: 220% 220%; opacity: 0.9; }
-        }
-
-        @keyframes gradientFlow {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-
-        #gradient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -3;
-            opacity: 0.8;
-            transition: all 1.5s ease;
-        }
-    `;
-    document.head.appendChild(style);
 }
 
 // Start when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        addGradientAnimations();
-        initBackground();
-    });
+    document.addEventListener('DOMContentLoaded', initBackground);
 } else {
-    addGradientAnimations();
     initBackground();
 }
