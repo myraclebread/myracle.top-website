@@ -286,42 +286,71 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-// Listen for URL changes to detect when articles are closed
-function observeURLChanges() {
-    let currentHash = window.location.hash;
+// Smooth background transitions for article navigation
+function setupSmoothBackgroundTransitions() {
+    let lastActiveArticle = null;
     
-    setInterval(() => {
-        if (window.location.hash !== currentHash) {
-            currentHash = window.location.hash;
-            const section = currentHash.substring(1);
-            
-            if (gradientThemes[section]) {
-                // Valid section - update background
-                targetBehavior = section;
-                transitionProgress = 0;
-                updateGradient(section);
-            } else {
-                // No section or home - reset to intro
-                targetBehavior = 'intro';
-                transitionProgress = 0;
-                updateGradient('intro');
+    // Watch for article changes using MutationObserver
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const target = mutation.target;
+                
+                // Check if this is an article becoming active/inactive
+                if (target.id && target.id !== 'main' && target.tagName === 'ARTICLE') {
+                    const isNowActive = target.classList.contains('active');
+                    
+                    if (isNowActive) {
+                        // Article opened - transition to its background
+                        lastActiveArticle = target.id;
+                        targetBehavior = target.id;
+                        transitionProgress = 0;
+                        updateGradient(target.id);
+                    } else if (lastActiveArticle === target.id) {
+                        // Article closed - smoothly transition back to intro
+                        lastActiveArticle = null;
+                        targetBehavior = 'intro';
+                        transitionProgress = 0;
+                        updateGradient('intro');
+                    }
+                }
             }
-        }
-    }, 100);
-}
-
-// Detect clicks outside articles to reset background
-function setupClickOutsideDetection() {
+        });
+    });
+    
+    // Observe all articles for class changes
+    document.querySelectorAll('article').forEach(article => {
+        observer.observe(article, { attributes: true, attributeFilter: ['class'] });
+    });
+    
+    // Also detect clicks on the main wrapper (when clicking outside articles)
     document.addEventListener('click', function(e) {
-        // If clicking directly on the wrapper or main area (not on links or articles)
-        if (e.target.id === 'wrapper' || 
-            e.target.id === 'main' || 
-            (e.target.tagName === 'DIV' && e.target.classList.contains('content')) ||
-            e.target.classList.contains('is-preload')) {
-            
+        if (e.target.id === 'wrapper' || e.target.id === 'main') {
             targetBehavior = 'intro';
             transitionProgress = 0;
             updateGradient('intro');
+        }
+    });
+    
+    // ESC key to close articles and go back to intro
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            targetBehavior = 'intro';
+            transitionProgress = 0;
+            updateGradient('intro');
+        }
+    });
+    
+    // Also handle direct navigation clicks
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (link && link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
+            const section = link.getAttribute('href').substring(1);
+            if (gradientThemes[section]) {
+                targetBehavior = section;
+                transitionProgress = 0;
+                updateGradient(section);
+            }
         }
     });
 }
@@ -371,10 +400,8 @@ function initBackground() {
     // Listen for window resize
     window.addEventListener('resize', resizeCanvas);
     
-    // Set up detection for background reset
-    observeURLChanges();
-    setupClickOutsideDetection();
-    setupEscapeKeyDetection();
+    // Set up smooth background transitions
+    setupSmoothBackgroundTransitions();
     
     // Listen for navigation clicks
     document.addEventListener('click', function(e) {
