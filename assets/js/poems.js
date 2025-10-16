@@ -1,8 +1,8 @@
-//A variable to store the full content of the current poem, for the skip function.
-let currentPoemContent = '';
-let typingInterval = null; // Store the interval ID for the typing effect
+// assets/js/poems.js
 
-//This function now fetches a single random poem from the PoetryDB API.
+let currentPoemContent = '';
+let typingInterval = null;
+
 async function loadRandomPoem() {
     const titleEl = document.getElementById('poemTitle');
     const contentEl = document.getElementById('poemContent');
@@ -21,7 +21,7 @@ async function loadRandomPoem() {
     contentEl.textContent = "";
 
     try {
-        const response = await fetch('https://poetrydb.org/random');
+        const response = await fetch('https://poetrydb.org/random', { mode: 'cors' });
         if (!response.ok) throw new Error('API request failed');
         
         const data = await response.json();
@@ -43,13 +43,10 @@ async function loadRandomPoem() {
         console.error('Error loading poem:', error);
         titleEl.textContent = "Error";
         contentEl.textContent = "Could not load a poem from the internet. Please try again.";
-        
-        // ADD THIS LINE TO RE-ENABLE THE BUTTON ON ERROR
         refreshButton.disabled = false; 
     }
 }
 
-// This function works perfectly as is.
 function typeWriterEffect(text, element, callback, speed = 30) {
     element.textContent = "";
     let i = 0;
@@ -72,7 +69,6 @@ function typeWriterEffect(text, element, callback, speed = 30) {
     typingInterval = setInterval(type, speed);
 }
 
-//This function now uses the 'currentPoemContent' variable instead of searching an array.
 function skipTypewriter() {
     if (!currentPoemContent) return;
     
@@ -83,20 +79,19 @@ function skipTypewriter() {
     
     const poemContent = document.getElementById('poemContent');
     poemContent.classList.remove('typing');
-    poemContent.textContent = currentPoemContent; // Display the full poem instantly
+    poemContent.textContent = currentPoemContent;
     
     document.getElementById('refreshPoemBtn').disabled = false;
 }
 
-//The event listeners are still valid.
 document.addEventListener("DOMContentLoaded", () => {
-    // Load the first poem when the page is ready
     loadRandomPoem();
 
     const refreshBtn = document.getElementById('refreshPoemBtn');
     const skipBtn = document.getElementById('skipTypingBtn');
 
     if (refreshBtn) {
+        // UPDATED: Removed the line that was disabling the button too early
         refreshBtn.addEventListener('click', loadRandomPoem);
     }
 
@@ -104,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
         skipBtn.addEventListener('click', skipTypewriter);
     }
 
-    // Automatically fetch a new poem when the 'poems' section is opened
     const poemsArticle = document.getElementById('poems');
     if (poemsArticle) {
         const observer = new MutationObserver((mutations) => {
