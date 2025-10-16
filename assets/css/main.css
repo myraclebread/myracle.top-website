@@ -1841,11 +1841,11 @@ button:hover {
 }
 
 .annoying-dog {
-    position: fixed; /* CHANGED: This pins it to the screen */
+    position: fixed; /* This pins it to the screen */
     bottom: 10px;    /* 10px from the bottom of the window */
-    right: 15px;     /* 15px from the right of the window */
+    right: 10 !important;     /* 15px from the right of the window */
     width: 35px;
-    transform: translateY(40%); /* Hides most of the dog */
+    transform: translateY(20%); /* Hides most of the dog */
     transition: transform 0.3s ease;
     z-index: 100;
     cursor: pointer; /* Makes it clear you can interact with it */
