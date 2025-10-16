@@ -1860,45 +1860,42 @@ body.big-shot h1, body.big-shot h2, body.big-shot p, body.big-shot a {
 body.big-shot h1::before {
     content: '[BIG SHOT] ';
 }
-.roaring-knight {
-    /* Positioning */
-    position: absolute;
-    bottom: 0;
-    right: -20px;
-    
-    /* Sizing & Appearance */
-    height: 90%;
-    opacity: 0; /* Hidden by default */
-    pointer-events: none;
-    z-index: -1;
-    filter: brightness(0.6);
 
-    /* Animation */
-    transition: opacity 1.5s ease-in-out;
-    /* NEW: Add the infinite sway animation here */
-    animation: infinite-sway 10s ease-in-out infinite; 
+
+body.is-article-visible #footer {
+    opacity: 1;
+    filter: none;
+    transform: none;
 }
 
-/* This makes the knight appear when the contact article is active */
-#main article.active .roaring-knight {
-    opacity: 0.4;
+
+body.is-article-visible #wrapper {
+    justify-content: space-between;
+}
+.konami-hint {
+    margin-top: 1.5rem;
+    text-align: center;
+    user-select: none; /* Prevents text selection */
 }
 
-/* Add this @keyframes block for the sway animation */
-@keyframes infinite-sway {
-    0% {
-        transform: translateX(0px) translateY(0px) rotate(0deg);
-    }
-    25% {
-        transform: translateX(-15px) translateY(5px) rotate(-2deg);
-    }
-    50% {
-        transform: translateX(0px) translateY(10px) rotate(0deg);
-    }
-    75% {
-        transform: translateX(15px) translateY(5px) rotate(2deg);
-    }
-    100% {
-        transform: translateX(0px) translateY(0px) rotate(0deg);
-    }
+/* Style for both the icons and the letters */
+.konami-hint i,
+.konami-hint span {
+    font-size: 0.8rem; /* Make icons small */
+    color: rgba(255, 255, 255, 0.06); /* Make them faint */
+    margin: 0 0.2rem;
+    transition: color 0.3s ease;
+    display: inline-block; /* Helps with alignment */
+    vertical-align: middle; /* Aligns them on the same line */
+}
+
+/* Add bold weight to the letters to match the icons */
+.konami-hint span {
+    font-weight: 600;
+}
+
+/* Make everything brighter on hover */
+.konami-hint:hover i,
+.konami-hint:hover span {
+    color: rgba(255, 255, 255, 0.8);
 }

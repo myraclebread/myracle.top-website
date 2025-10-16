@@ -1,4 +1,4 @@
-// ===== BACKGROUND SYSTEM v3 (Final) =====
+// ===== BACKGROUND SYSTEM v5 (Complete & Final with Afterimage Trail) =====
 
 // --- General Setup ---
 let gradientEl;
@@ -10,6 +10,23 @@ let currentSection = 'intro';
 let targetBehavior = 'intro';
 let transitionProgress = 1;
 const mouse = { x: null, y: null, radius: 150 };
+
+const knight = {
+    img: new Image(),
+    x: -200,
+    y: window.innerHeight - 150,
+    width: 50,
+    height: 70,
+    animationProgress: 0,
+    animationDuration: 45000 // 45 seconds in milliseconds
+};
+knight.img.src = 'https://static.wikia.nocookie.net/deltarune/images/7/7b/TheRoaringKnightDeltarune.webp';
+
+// An array to store the Knight's last few positions for the trail
+let knightHistory = [];
+const KNIGHT_TRAIL_LENGTH = 30; // How many afterimages to show
+let frameCount = 0;
+const TRAIL_SPACING_FRAMES = 5;
 
 // --- Color & Theme Configuration ---
 const gradientThemes = {
@@ -68,7 +85,7 @@ const behaviors = {
     contact: { color: 'hsl(320, 95%, 70%)', speed: 1.0, connectionDistance: 130, formation: 'interactiveNetwork' }
 };
 
-// --- Core Functions ---
+// --- Core Animation Functions ---
 function resizeCanvas() {
     if (canvas) {
         canvas.width = window.innerWidth;
@@ -95,32 +112,24 @@ function createParticles() {
 function updateGradient(section) {
     const config = gradientThemes[section];
     if (config && gradientEl) {
-        // Fade out the current gradient a bit faster
         gradientEl.style.transition = 'opacity 0.75s ease';
         gradientEl.style.opacity = '0';
-
-        // After the fade-out is complete, swap the content and fade back in
         setTimeout(() => {
-            // Apply new styles while it's invisible
             gradientEl.style.background = config.background;
             gradientEl.style.animation = config.animation;
             gradientEl.style.backgroundSize = config.size;
-
-            // Fade in with the new styles
             gradientEl.style.opacity = '0.8';
-        }, 750); // Match the fade-out duration
+        }, 750);
     }
 }
 
-// --- Particle Behavior Logic ---
 function updateParticleBehavior(particle, behavior) {
     const config = behaviors[behavior];
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
-    switch(config.formation) {
-        case 'interactiveNebula': // UPDATED: This is the new behavior for the intro
-            // Mouse repulsion logic
+    switch (config.formation) {
+        case 'interactiveNebula':
             if (mouse.x != null) {
                 const dx = particle.x - mouse.x;
                 const dy = particle.y - mouse.y;
@@ -133,7 +142,6 @@ function updateParticleBehavior(particle, behavior) {
                     particle.y += forceDirectionY * force * 1.5;
                 }
             }
-            // Nebula pulsing logic
             const pulse = Math.sin(particle.angle + Date.now() * 0.0001);
             const distFromCenter = Math.sqrt(Math.pow(particle.x - centerX, 2) + Math.pow(particle.y - centerY, 2));
             const pullFactor = (distFromCenter > 100) ? 0.01 : -0.01 * pulse;
@@ -191,7 +199,6 @@ function updateParticleBehavior(particle, behavior) {
     }
 }
 
-// --- Animation Loop ---
 function interpolateColor(color1, color2, progress) {
     const hsl1 = color1.match(/\d+/g).map(Number);
     const hsl2 = color2.match(/\d+/g).map(Number);
@@ -201,9 +208,62 @@ function interpolateColor(color1, color2, progress) {
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
-function animate() {
+function updateKnightPosition(deltaTime) {
+    knight.animationProgress = (knight.animationProgress + deltaTime) % knight.animationDuration;
+    const progress = knight.animationProgress / knight.animationDuration;
+
+    const screenWidth = canvas.width;
+    const startX = -200;
+    const endX = screenWidth + 200;
+
+    if (progress < 0.5) {
+        const phaseProgress = progress * 2;
+        knight.x = startX + (endX - startX) * phaseProgress;
+        const yOffset = -30 * Math.sin(phaseProgress * Math.PI);
+        knight.y = screenWidth > 768 ? window.innerHeight - 150 + yOffset : window.innerHeight - 100 + yOffset;
+    } else {
+        const phaseProgress = (progress - 0.5) * 2;
+        knight.x = endX + (startX - endX) * phaseProgress;
+        const yOffset = -30 * Math.sin(phaseProgress * Math.PI);
+        knight.y = screenWidth > 768 ? window.innerHeight - 300 + yOffset : window.innerHeight - 200 + yOffset;
+    }
+    if (frameCount % TRAIL_SPACING_FRAMES === 0) {
+        knightHistory.push({ x: knight.x, y: knight.y });
+
+        if (knightHistory.length > KNIGHT_TRAIL_LENGTH) {
+            knightHistory.shift();
+        }
+    }
+}
+
+function drawKnightAndTrail() {
+    if (!knight.img.complete) return;
+
+    for (let i = 0; i < knightHistory.length; i++) {
+        const pos = knightHistory[i];
+        const opacity = (i / KNIGHT_TRAIL_LENGTH) * 0.4;
+        
+        ctx.globalAlpha = opacity;
+        ctx.filter = 'brightness(0.7)';
+        ctx.drawImage(knight.img, pos.x, pos.y, knight.width, knight.height);
+    }
+
+    ctx.globalAlpha = 0.6;
+    ctx.filter = 'brightness(0.7)';
+    ctx.drawImage(knight.img, knight.x, knight.y, knight.width, knight.height);
+    
+    ctx.globalAlpha = 1.0;
+    ctx.filter = 'none';
+}
+
+let lastTime = 0;
+function animate(currentTime) {
     if (!ctx || !canvas) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // FIX: No trails
+    const deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    frameCount++;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (transitionProgress < 1) {
         transitionProgress += 0.015;
@@ -265,11 +325,13 @@ function animate() {
             }
         }
     }
+    
+    updateKnightPosition(deltaTime);
+    drawKnightAndTrail();
 
     requestAnimationFrame(animate);
 }
 
-// --- Event Handling & Initialization ---
 function setupEventListeners() {
     window.addEventListener('mousemove', e => {
         mouse.x = e.x;
@@ -346,7 +408,8 @@ function initBackground() {
         updateGradient('intro');
     }
     
-    animate();
+    lastTime = performance.now();
+    requestAnimationFrame(animate);
     
     window.addEventListener('resize', resizeCanvas);
     setupEventListeners();
