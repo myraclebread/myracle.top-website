@@ -1841,17 +1841,19 @@ button:hover {
 }
 
 .annoying-dog {
-    position: absolute;
-    bottom: 0;
-    right: 30px;
-    width: 35px; /* Adjust size as needed */
+    position: fixed; /* CHANGED: This pins it to the screen */
+    bottom: 10px;    /* 10px from the bottom of the window */
+    right: 15px;     /* 15px from the right of the window */
+    width: 35px;
     transform: translateY(40%); /* Hides most of the dog */
     transition: transform 0.3s ease;
     z-index: 100;
+    cursor: pointer; /* Makes it clear you can interact with it */
 }
 
-#footer:hover .annoying-dog {
-    transform: translateY(0); /* Dog pops up on hover */
+/* The dog now pops up when you hover over IT, not the footer */
+.annoying-dog:hover {
+    transform: translateY(0); 
 }
 
 body.big-shot h1, body.big-shot h2, body.big-shot p, body.big-shot a {
