@@ -1,77 +1,74 @@
-// ===== BACKGROUND SYSTEM =====
+// ===== BACKGROUND SYSTEM v3 (Final) =====
+
+// --- General Setup ---
 let gradientEl;
 let canvas;
 let ctx;
 let particles = [];
-const particleCount = 18;
+const particleCount = 40;
 let currentSection = 'intro';
 let targetBehavior = 'intro';
 let transitionProgress = 1;
+const mouse = { x: null, y: null, radius: 150 };
 
-// Gradient themes for each section - FIXED SYNTAX
+// --- Color & Theme Configuration ---
 const gradientThemes = {
     intro: {
         background: `
-            radial-gradient(circle at 20% 30%, rgba(100, 80, 255, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 80% 70%, rgba(255, 100, 100, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 40% 90%, rgba(100, 200, 255, 0.3) 0%, transparent 50%),
-            linear-gradient(135deg, #0a0a2a 0%, #000000 100%)
+            radial-gradient(circle at 20% 30%, rgba(220, 70, 255, 0.3) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(255, 105, 180, 0.25) 0%, transparent 40%),
+            linear-gradient(135deg, #2A0A3D 0%, #1A0526 100%)
         `,
         animation: 'gradientShift 20s ease infinite',
         size: '400% 400%'
     },
     work: {
         background: `
-            radial-gradient(circle at 10% 20%, rgba(80, 120, 255, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 90% 40%, rgba(0, 200, 255, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 50% 80%, rgba(0, 100, 200, 0.3) 0%, transparent 50%),
-            linear-gradient(45deg, #001122 0%, #000811 100%)
+            radial-gradient(circle at 10% 20%, rgba(150, 70, 255, 0.4) 0%, transparent 40%),
+            radial-gradient(circle at 90% 40%, rgba(180, 100, 220, 0.3) 0%, transparent 50%),
+            linear-gradient(45deg, #1A1A3D 0%, #0F0F26 100%)
         `,
         animation: 'gradientShift 15s ease infinite',
         size: '400% 400%'
     },
     resume: {
         background: `
-            radial-gradient(circle at 30% 20%, rgba(120, 180, 255, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(80, 160, 255, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 50% 90%, rgba(60, 140, 255, 0.3) 0%, transparent 50%),
-            linear-gradient(135deg, #001a33 0%, #000000 100%)
+            radial-gradient(circle at 30% 20%, rgba(255, 100, 180, 0.4) 0%, transparent 40%),
+            radial-gradient(circle at 70% 60%, rgba(200, 80, 255, 0.3) 0%, transparent 50%),
+            linear-gradient(135deg, #3D0A30 0%, #1A051A 100%)
         `,
         animation: 'gradientShift 12s ease infinite',
         size: '400% 400%'
     },
     poems: {
         background: `
-            radial-gradient(circle at 30% 20%, rgba(180, 80, 255, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(255, 100, 200, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 50% 90%, rgba(255, 150, 255, 0.3) 0%, transparent 50%),
-            linear-gradient(225deg, #1a0a2a 0%, #110022 50%, #000000 100%)
+            radial-gradient(circle at 30% 20%, rgba(255, 182, 193, 0.4) 0%, transparent 40%),
+            radial-gradient(circle at 70% 60%, rgba(218, 112, 214, 0.35) 0%, transparent 50%),
+            linear-gradient(225deg, #4A1A4A 0%, #2A0A2A 50%, #1A051A 100%)
         `,
         animation: 'gradientFlow 25s linear infinite',
         size: '200% 200%'
     },
     contact: {
         background: `
-            radial-gradient(circle at 20% 50%, rgba(100, 255, 150, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 80% 30%, rgba(0, 255, 200, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 60% 70%, rgba(150, 255, 100, 0.3) 0%, transparent 50%),
-            linear-gradient(135deg, #002200 0%, #001100 50%, #000000 100%)
+            radial-gradient(circle at 20% 50%, rgba(255, 20, 147, 0.4) 0%, transparent 40%),
+            radial-gradient(circle at 80% 30%, rgba(199, 21, 133, 0.35) 0%, transparent 50%),
+            linear-gradient(135deg, #5A0535 0%, #3D0A2A 50%, #1A051A 100%)
         `,
         animation: 'gradientPulse 12s ease-in-out infinite',
         size: '200% 200%'
     }
 };
 
-// Section behaviors
 const behaviors = {
-    intro: { color: 'hsl(170, 80%, 60%)', speed: 0.8, connectionDistance: 120, formation: 'random' },
-    work: { color: 'hsl(200, 80%, 60%)', speed: 0.5, connectionDistance: 150, formation: 'clusters' },
-    resume: { color: 'hsl(220, 80%, 60%)', speed: 0.6, connectionDistance: 140, formation: 'organized' },
-    poems: { color: 'hsl(280, 70%, 65%)', speed: 0.4, connectionDistance: 130, formation: 'gentleFlow' },
-    contact: { color: 'hsl(120, 70%, 60%)', speed: 0.9, connectionDistance: 160, formation: 'network' }
+    intro: { color: 'hsl(285, 90%, 75%)', speed: 0.3, connectionDistance: 120, formation: 'interactiveNebula' },
+    work: { color: 'hsl(250, 80%, 80%)', speed: 0.1, connectionDistance: 100, formation: 'focusedGrid' },
+    resume: { color: 'hsl(330, 90%, 75%)', speed: 0.4, connectionDistance: 90, formation: 'gentleRise' },
+    poems: { color: 'hsl(300, 100%, 85%)', speed: 0.5, connectionDistance: 110, formation: 'dreamyOrbit' },
+    contact: { color: 'hsl(320, 95%, 70%)', speed: 1.0, connectionDistance: 130, formation: 'interactiveNetwork' }
 };
 
-// Set canvas size
+// --- Core Functions ---
 function resizeCanvas() {
     if (canvas) {
         canvas.width = window.innerWidth;
@@ -79,22 +76,18 @@ function resizeCanvas() {
     }
 }
 
-// Create particles
 function createParticles() {
     particles = [];
     for (let i = 0; i < particleCount; i++) {
         particles.push({
+            id: i,
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             size: Math.random() * 1.5 + 0.8,
-            speedX: (Math.random() - 0.5) * 0.8,
-            speedY: (Math.random() - 0.5) * 0.8,
-            baseX: Math.random() * canvas.width,
-            baseY: Math.random() * canvas.height,
-            cluster: Math.floor(Math.random() * 3),
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: (Math.random() - 0.5) * 0.5,
             angle: Math.random() * Math.PI * 2,
-            flowSpeed: 0.02 + Math.random() * 0.02,
-            flowRadius: 20 + Math.random() * 40
+            orbitSpeed: 0.005 + Math.random() * 0.005,
         });
     }
 }
@@ -102,115 +95,116 @@ function createParticles() {
 function updateGradient(section) {
     const config = gradientThemes[section];
     if (config && gradientEl) {
-        // Apply the new gradient but keep it hidden during transition
-        gradientEl.style.background = config.background;
-        gradientEl.style.animation = config.animation;
-        gradientEl.style.backgroundSize = config.size;
+        // Fade out the current gradient a bit faster
+        gradientEl.style.transition = 'opacity 0.75s ease';
         gradientEl.style.opacity = '0';
-        
-        // Fade in the new gradient smoothly
+
+        // After the fade-out is complete, swap the content and fade back in
         setTimeout(() => {
-            gradientEl.style.transition = 'opacity 1.5s ease';
+            // Apply new styles while it's invisible
+            gradientEl.style.background = config.background;
+            gradientEl.style.animation = config.animation;
+            gradientEl.style.backgroundSize = config.size;
+
+            // Fade in with the new styles
             gradientEl.style.opacity = '0.8';
-        }, 50);
+        }, 750); // Match the fade-out duration
     }
 }
 
-// Particle behavior based on section
+// --- Particle Behavior Logic ---
 function updateParticleBehavior(particle, behavior) {
-    const behaviorConfig = behaviors[behavior];
-    
-    switch(behaviorConfig.formation) {
-        case 'random':
-            particle.x += particle.speedX;
-            particle.y += particle.speedY;
-            break;
-            
-        case 'clusters':
-            const centerX = (particle.cluster * (canvas.width / 3)) + (canvas.width / 6);
-            const centerY = canvas.height / 2;
-            const dx = centerX - particle.x;
-            const dy = centerY - particle.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance > 40) {
-                particle.x += dx * 0.01;
-                particle.y += dy * 0.01;
+    const config = behaviors[behavior];
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    switch(config.formation) {
+        case 'interactiveNebula': // UPDATED: This is the new behavior for the intro
+            // Mouse repulsion logic
+            if (mouse.x != null) {
+                const dx = particle.x - mouse.x;
+                const dy = particle.y - mouse.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    particle.x += forceDirectionX * force * 1.5;
+                    particle.y += forceDirectionY * force * 1.5;
+                }
             }
-            particle.x += (Math.random() - 0.5) * 0.3;
-            particle.y += (Math.random() - 0.5) * 0.3;
+            // Nebula pulsing logic
+            const pulse = Math.sin(particle.angle + Date.now() * 0.0001);
+            const distFromCenter = Math.sqrt(Math.pow(particle.x - centerX, 2) + Math.pow(particle.y - centerY, 2));
+            const pullFactor = (distFromCenter > 100) ? 0.01 : -0.01 * pulse;
+            particle.x += ((centerX - particle.x) * 0.001) + particle.speedX * config.speed + pullFactor;
+            particle.y += ((centerY - particle.y) * 0.001) + particle.speedY * config.speed + pullFactor;
             break;
-            
-        case 'organized':
-            const orgCenterX = canvas.width / 2;
-            const orgCenterY = canvas.height / 2;
-            const orgDx = orgCenterX - particle.x;
-            const orgDy = orgCenterY - particle.y;
-            const orgDistance = Math.sqrt(orgDx * orgDx + orgDy * orgDy);
-            
-            if (orgDistance > 60) {
-                particle.x += orgDx * 0.008;
-                particle.y += orgDy * 0.008;
+
+        case 'focusedGrid':
+            const gridSize = Math.floor(Math.sqrt(particleCount));
+            const spacingX = canvas.width / (gridSize + 1);
+            const spacingY = canvas.height / (gridSize + 1);
+            const targetX = ((particle.id % gridSize) + 1) * spacingX;
+            const targetY = (Math.floor(particle.id / gridSize) + 1) * spacingY;
+            particle.x += (targetX - particle.x) * 0.02;
+            particle.y += (targetY - particle.y) * 0.02;
+            break;
+
+        case 'gentleRise':
+            particle.x += particle.speedX * config.speed;
+            particle.y -= config.speed * 0.5;
+            if (particle.y < -10) particle.y = canvas.height + 10;
+            break;
+
+        case 'dreamyOrbit':
+            particle.angle += particle.orbitSpeed;
+            const orbitRadiusX = canvas.width * 0.35;
+            const orbitRadiusY = canvas.height * 0.4;
+            const targetOrbitX = centerX + Math.sin(particle.angle) * orbitRadiusX;
+            const targetOrbitY = centerY + Math.sin(particle.angle * 2) * orbitRadiusY / 2;
+            particle.x += (targetOrbitX - particle.x) * 0.03;
+            particle.y += (targetOrbitY - particle.y) * 0.03;
+            break;
+
+        case 'interactiveNetwork':
+            if (mouse.x != null) {
+                const dx = particle.x - mouse.x;
+                const dy = particle.y - mouse.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    particle.x += forceDirectionX * force * 1.5;
+                    particle.y += forceDirectionY * force * 1.5;
+                }
             }
-            break;
-            
-        case 'gentleFlow':
-            particle.angle += particle.flowSpeed;
-            const waveX = Math.cos(particle.angle) * particle.flowRadius;
-            const waveY = Math.sin(particle.angle * 1.3) * (particle.flowRadius * 0.7);
-            
-            const toBaseX = particle.baseX - particle.x;
-            const toBaseY = particle.baseY - particle.y;
-            
-            particle.x += toBaseX * 0.005 + waveX * 0.05;
-            particle.y += toBaseY * 0.005 + waveY * 0.05;
-            break;
-            
-        case 'network':
-            particle.x += particle.speedX * 1.2;
-            particle.y += particle.speedY * 1.2;
+            particle.x += particle.speedX * config.speed;
+            particle.y += particle.speedY * config.speed;
             break;
     }
-    
-    // Bounce off walls
-    if (particle.x <= 0) {
-        particle.x = 1;
-        particle.speedX *= -0.8;
-    }
-    if (particle.x >= canvas.width) {
-        particle.x = canvas.width - 1;
-        particle.speedX *= -0.8;
-    }
-    if (particle.y <= 0) {
-        particle.y = 1;
-        particle.speedY *= -0.8;
-    }
-    if (particle.y >= canvas.height) {
-        particle.y = canvas.height - 1;
-        particle.speedY *= -0.8;
+
+    if (config.formation !== 'gentleRise' && config.formation !== 'dreamyOrbit') {
+        if (particle.x <= 0 || particle.x >= canvas.width) particle.speedX *= -1;
+        if (particle.y <= 0 || particle.y >= canvas.height) particle.speedY *= -1;
     }
 }
 
-// Color interpolation
+// --- Animation Loop ---
 function interpolateColor(color1, color2, progress) {
     const hsl1 = color1.match(/\d+/g).map(Number);
     const hsl2 = color2.match(/\d+/g).map(Number);
-    
     const h = hsl1[0] + (hsl2[0] - hsl1[0]) * progress;
     const s = hsl1[1] + (hsl2[1] - hsl1[1]) * progress;
     const l = hsl1[2] + (hsl2[2] - hsl1[2]) * progress;
-    
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
 function animate() {
     if (!ctx || !canvas) return;
-    
-    // Clear with fade for trails
-    ctx.fillStyle = 'rgba(0, 5, 15, 0.08)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Handle transitions
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // FIX: No trails
+
     if (transitionProgress < 1) {
         transitionProgress += 0.015;
         if (transitionProgress >= 1) {
@@ -218,64 +212,52 @@ function animate() {
             transitionProgress = 1;
         }
     }
-    
-    // Update particles with smooth transition
+
     particles.forEach(p => {
+        const oldPos = { x: p.x, y: p.y };
+        updateParticleBehavior(p, currentSection);
+        const currentBehaviorPos = { x: p.x, y: p.y };
+        p.x = oldPos.x; p.y = oldPos.y;
+        updateParticleBehavior(p, targetBehavior);
+        const targetBehaviorPos = { x: p.x, y: p.y };
+
         if (transitionProgress < 1) {
-            const oldX = p.x, oldY = p.y;
-            
-            updateParticleBehavior(p, currentSection);
-            const currentX = p.x, currentY = p.y;
-            
-            p.x = oldX; p.y = oldY;
-            updateParticleBehavior(p, targetBehavior);
-            const targetX = p.x, targetY = p.y;
-            
-            p.x = currentX + (targetX - currentX) * transitionProgress;
-            p.y = currentY + (targetY - currentY) * transitionProgress;
+            p.x = oldPos.x + (targetBehaviorPos.x - oldPos.x) * transitionProgress;
+            p.y = oldPos.y + (targetBehaviorPos.y - oldPos.y) * transitionProgress;
         } else {
-            updateParticleBehavior(p, currentSection);
+             p.x = currentBehaviorPos.x;
+             p.y = currentBehaviorPos.y;
         }
         
-        // Draw particle
         const behavior = behaviors[currentSection];
         const targetBehaviorConfig = behaviors[targetBehavior];
-        const currentColor = transitionProgress < 1 ? 
-            interpolateColor(behavior.color, targetBehaviorConfig.color, transitionProgress) : 
+        const currentColor = transitionProgress < 1 ?
+            interpolateColor(behavior.color, targetBehaviorConfig.color, transitionProgress) :
             behavior.color;
-        
+
         ctx.fillStyle = currentColor;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
     });
-    
-    // Draw connections
+
     const connectionDist = behaviors[currentSection].connectionDistance;
     const targetConnectionDist = behaviors[targetBehavior].connectionDistance;
-    const currentConnectionDist = transitionProgress < 1 ? 
-        connectionDist + (targetConnectionDist - connectionDist) * transitionProgress : 
+    const currentConnectionDist = transitionProgress < 1 ?
+        connectionDist + (targetConnectionDist - connectionDist) * transitionProgress :
         connectionDist;
-    
-    ctx.strokeStyle = transitionProgress < 1 ? 
-        interpolateColor(
-            behaviors[currentSection].color, 
-            behaviors[targetBehavior].color, 
-            transitionProgress
-        ).replace('hsl', 'hsla').replace(')', ', 0.08)') : 
-        behaviors[currentSection].color.replace('hsl', 'hsla').replace(')', ', 0.08)');
-    
-    ctx.lineWidth = 0.8;
-    
+
     for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
             const dx = particles[i].x - particles[j].x;
             const dy = particles[i].y - particles[j].y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            
+
             if (distance < currentConnectionDist) {
                 const opacity = 1 - (distance / currentConnectionDist);
-                ctx.globalAlpha = opacity * 0.15;
+                ctx.strokeStyle = interpolateColor(behaviors[currentSection].color, behaviors[targetBehavior].color, transitionProgress)
+                                  .replace('hsl', 'hsla').replace(')', `, ${opacity * 0.15})`);
+                ctx.lineWidth = 0.8;
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
                 ctx.lineTo(particles[j].x, particles[j].y);
@@ -283,144 +265,94 @@ function animate() {
             }
         }
     }
-    ctx.globalAlpha = 1;
-    
+
     requestAnimationFrame(animate);
 }
 
-// Smooth background transitions for article navigation
-function setupSmoothBackgroundTransitions() {
-    let lastActiveArticle = null;
+// --- Event Handling & Initialization ---
+function setupEventListeners() {
+    window.addEventListener('mousemove', e => {
+        mouse.x = e.x;
+        mouse.y = e.y;
+    });
     
-    // Watch for article changes using MutationObserver
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+    window.addEventListener('mouseout', () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
+
+    const handleSectionChange = (section) => {
+        if (gradientThemes[section] && targetBehavior !== section) {
+            targetBehavior = section;
+            transitionProgress = 0;
+            updateGradient(section);
+        }
+    };
+
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.attributeName === 'class') {
                 const target = mutation.target;
-                
-                // Check if this is an article becoming active/inactive
-                if (target.id && target.id !== 'main' && target.tagName === 'ARTICLE') {
-                    const isNowActive = target.classList.contains('active');
-                    
-                    if (isNowActive) {
-                        // Article opened - transition to its background
-                        lastActiveArticle = target.id;
-                        targetBehavior = target.id;
-                        transitionProgress = 0;
-                        updateGradient(target.id);
-                    } else if (lastActiveArticle === target.id) {
-                        // Article closed - smoothly transition back to intro
-                        lastActiveArticle = null;
-                        targetBehavior = 'intro';
-                        transitionProgress = 0;
-                        updateGradient('intro');
+                if (target.tagName === 'ARTICLE' && target.id) {
+                    if (target.classList.contains('active')) {
+                        handleSectionChange(target.id);
+                    } else {
+                        if (document.querySelectorAll('article.active').length === 0) {
+                             handleSectionChange('intro');
+                        }
                     }
                 }
             }
         });
     });
-    
-    // Observe all articles for class changes
+
     document.querySelectorAll('article').forEach(article => {
-        observer.observe(article, { attributes: true, attributeFilter: ['class'] });
+        observer.observe(article, { attributes: true });
     });
-    
-    // Also detect clicks on the main wrapper (when clicking outside articles)
-    document.addEventListener('click', function(e) {
-        if (e.target.id === 'wrapper' || e.target.id === 'main') {
-            targetBehavior = 'intro';
-            transitionProgress = 0;
-            updateGradient('intro');
-        }
-    });
-    
-    // ESC key to close articles and go back to intro
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            targetBehavior = 'intro';
-            transitionProgress = 0;
-            updateGradient('intro');
-        }
-    });
-    
-    // Also handle direct navigation clicks
-    document.addEventListener('click', function(e) {
+
+    document.addEventListener('click', e => {
         const link = e.target.closest('a');
-        if (link && link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
-            const section = link.getAttribute('href').substring(1);
-            if (gradientThemes[section]) {
-                targetBehavior = section;
-                transitionProgress = 0;
-                updateGradient(section);
-            }
+        if (link && link.hash) {
+            const section = link.hash.substring(1);
+            handleSectionChange(section);
         }
     });
-}
 
-// Detect ESC key to reset background
-function setupEscapeKeyDetection() {
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
-            targetBehavior = 'intro';
-            transitionProgress = 0;
-            updateGradient('intro');
+            handleSectionChange('intro');
         }
     });
 }
 
-// Initialize background when page loads
 function initBackground() {
     gradientEl = document.getElementById('gradient-bg');
     canvas = document.getElementById('particles-bg');
-    
     if (!gradientEl || !canvas) {
         console.error('Background elements not found');
         return;
     }
-    
     ctx = canvas.getContext('2d');
     
-    // Set initial size and create particles
     resizeCanvas();
     createParticles();
     
-    // Set initial background based on current URL
     const initialSection = window.location.hash.substring(1);
     if (gradientThemes[initialSection]) {
-        targetBehavior = initialSection;
         currentSection = initialSection;
+        targetBehavior = initialSection;
         updateGradient(initialSection);
     } else {
-        targetBehavior = 'intro';
-        currentSection = 'intro';
         updateGradient('intro');
     }
     
-    // Start animation
     animate();
     
-    // Listen for window resize
     window.addEventListener('resize', resizeCanvas);
-    
-    // Set up smooth background transitions
-    setupSmoothBackgroundTransitions();
-    
-    // Listen for navigation clicks
-    document.addEventListener('click', function(e) {
-        const link = e.target.closest('a');
-        if (link && link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
-            const section = link.getAttribute('href').substring(1);
-            if (gradientThemes[section]) {
-                targetBehavior = section;
-                transitionProgress = 0;
-                updateGradient(section);
-            }
-        }
-    });
+    setupEventListeners();
 }
 
-// Add gradient animations to the page
-function addGradientAnimations() {
+function addGradientKeyframes() {
     const style = document.createElement('style');
     style.textContent = `
         @keyframes gradientShift {
@@ -428,26 +360,21 @@ function addGradientAnimations() {
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
         @keyframes gradientPulse {
             0%, 100% { background-size: 200% 200%; opacity: 0.7; }
             50% { background-size: 220% 220%; opacity: 0.9; }
         }
-
         @keyframes gradientFlow {
             0% { background-position: 0% 0%; }
             100% { background-position: 100% 100%; }
         }
-
         #gradient-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -3;
-            opacity: 0.8;
-            transition: all 1.5s ease;
+            z-index: -1000;
         }
     `;
     document.head.appendChild(style);
@@ -455,11 +382,11 @@ function addGradientAnimations() {
 
 // Start when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        addGradientAnimations();
+    document.addEventListener('DOMContentLoaded', () => {
+        addGradientKeyframes();
         initBackground();
     });
 } else {
-    addGradientAnimations();
+    addGradientKeyframes();
     initBackground();
 }
