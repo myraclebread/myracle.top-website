@@ -12,35 +12,27 @@ async function loadRandomPoem() {
     refreshButton.disabled = true;
     skipButton.disabled = false;
 
-    // Clear any existing typing effect
     if (typingInterval) {
         clearInterval(typingInterval);
         typingInterval = null;
     }
 
-    // Show a loading message while fetching
     titleEl.textContent = "Finding a poem...";
     contentEl.textContent = "";
 
     try {
-        // Call the free PoetryDB API for a random poem
         const response = await fetch('https://poetrydb.org/random');
         if (!response.ok) throw new Error('API request failed');
         
         const data = await response.json();
-        const poem = data[0]; // The API returns an array with one poem
+        const poem = data[0];
 
         if (poem) {
-            // Format the title and author
             titleEl.textContent = `${poem.title} by ${poem.author}`;
-            
-            // The API gives lines as an array, so we join them with newlines
             currentPoemContent = poem.lines.join('\n');
-
-            // Start the typewriter effect
             contentEl.classList.add('typing');
             typeWriterEffect(currentPoemContent, contentEl, () => {
-                refreshButton.disabled = false; // Re-enable button when typing is done
+                refreshButton.disabled = false;
                 contentEl.classList.remove('typing');
             });
         } else {
@@ -51,7 +43,9 @@ async function loadRandomPoem() {
         console.error('Error loading poem:', error);
         titleEl.textContent = "Error";
         contentEl.textContent = "Could not load a poem from the internet. Please try again.";
-        refreshButton.disabled = false;
+        
+        // ADD THIS LINE TO RE-ENABLE THE BUTTON ON ERROR
+        refreshButton.disabled = false; 
     }
 }
 
