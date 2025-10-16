@@ -89,6 +89,7 @@
 						<!-- Contact -->
 							<article id="contact">
 								<h2 class="major">Contact</h2>
+								<img src="https://static.wikia.nocookie.net/deltarune/images/7/7b/TheRoaringKnightDeltarune.webp/revision/latest?cb=20250611162608" class="roaring-knight" alt="A tall, cloaked figure watches from the shadows.">
 								<form method="post" action="https://formspree.io/f/manebavq">
 									<div class="fields">
 										<div class="field half">
@@ -119,7 +120,8 @@
 
 				<!-- Footer -->
 					<footer id="footer">
-						<p class="copyright">&copy; miracle anxiety bread @ 2025: <a href="https://github.com/myraclebread">My Github</a>.</p>
+						<p class="copyright">&copy; myraclebread @ 2025: <a href="https://github.com/myraclebread">My Github</a>.</p>
+						<img src="https://static.wikia.nocookie.net/deltarune/images/4/45/Annoying_Dog_Sprite.png" class="annoying-dog" alt="Annoying Dog">
 					</footer>
 
 			</div>
@@ -136,5 +138,17 @@
 		<script src="assets/js/main.js"></script>
 		<script src="assets/js/poems.js"></script>
 		<script src="assets/js/background.js"></script>
+		<script>
+    		const secretCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+		    let input = [];
+    		document.addEventListener('keydown', (e) => {
+        	input.push(e.key);
+        		input.splice(-secretCode.length - 1, input.length - secretCode.length);
+        		if (input.join('') === secretCode.join('')) {
+        		    document.body.classList.add('big-shot');
+        		    setTimeout(() => document.body.classList.remove('big-shot'), 4000);
+        		}
+    		});
+		</script>
 	</body>
 </html>

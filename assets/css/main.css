@@ -1,5 +1,8 @@
 @import url(fontawesome-all.min.css);
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300italic,600italic,300,600");
+html {
+    cursor: url(https://www.spriters-resource.com/resources/icons/121/123656.png) 16 16, auto;
+}
 
 html,
 body,
@@ -1835,4 +1838,67 @@ button:hover {
     50% { color: #ffff00; }   /* Yellow */
     75% { color: #7fff00; }   /* Chartreuse */
     100% { color: #ff69b4; }   /* Back to Hot Pink */
+}
+
+.annoying-dog {
+    position: absolute;
+    bottom: 0;
+    right: 30px;
+    width: 50px; /* Adjust size as needed */
+    transform: translateY(40%); /* Hides most of the dog */
+    transition: transform 0.3s ease;
+    z-index: 100;
+}
+
+#footer:hover .annoying-dog {
+    transform: translateY(0); /* Dog pops up on hover */
+}
+
+body.big-shot h1, body.big-shot h2, body.big-shot p, body.big-shot a {
+    animation: tenna-color-cycle 0.5s steps(1, end) infinite;
+}
+body.big-shot h1::before {
+    content: '[BIG SHOT] ';
+}
+.roaring-knight {
+    /* Positioning */
+    position: absolute;
+    bottom: 0;
+    right: -20px;
+    
+    /* Sizing & Appearance */
+    height: 90%;
+    opacity: 0; /* Hidden by default */
+    pointer-events: none;
+    z-index: -1;
+    filter: brightness(0.6);
+
+    /* Animation */
+    transition: opacity 1.5s ease-in-out;
+    /* NEW: Add the infinite sway animation here */
+    animation: infinite-sway 10s ease-in-out infinite; 
+}
+
+/* This makes the knight appear when the contact article is active */
+#main article.active .roaring-knight {
+    opacity: 0.4;
+}
+
+/* Add this @keyframes block for the sway animation */
+@keyframes infinite-sway {
+    0% {
+        transform: translateX(0px) translateY(0px) rotate(0deg);
+    }
+    25% {
+        transform: translateX(-15px) translateY(5px) rotate(-2deg);
+    }
+    50% {
+        transform: translateX(0px) translateY(10px) rotate(0deg);
+    }
+    75% {
+        transform: translateX(15px) translateY(5px) rotate(2deg);
+    }
+    100% {
+        transform: translateX(0px) translateY(0px) rotate(0deg);
+    }
 }
