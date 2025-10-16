@@ -1844,7 +1844,7 @@ button:hover {
     position: absolute;
     bottom: 0;
     right: 30px;
-    width: 50px; /* Adjust size as needed */
+    width: 35px; /* Adjust size as needed */
     transform: translateY(40%); /* Hides most of the dog */
     transition: transform 0.3s ease;
     z-index: 100;
