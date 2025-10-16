@@ -1799,3 +1799,40 @@ button {
 button:hover {
   background-color: #666;
 }
+
+/* ===== Tenna Link Style ===== */
+
+/* 1. The main link style */
+.tenna-link {
+    display: inline-block; /* Allows us to apply transforms */
+    font-family: 'VT323', monospace; /* A great free pixel font */
+    text-transform: uppercase;
+    font-size: 1.1em; /* A little bigger to stand out */
+    border-bottom: none; /* Removes the default dotted underline */
+    animation: tenna-wave 0.8s linear infinite, tenna-color-cycle 1s steps(1, end) infinite;
+    -webkit-animation: tenna-wave 0.8s linear infinite, tenna-color-cycle 1s steps(1, end) infinite;
+}
+
+.tenna-link:hover {
+    /* Make the animation faster and more intense on hover! */
+    animation: tenna-wave 0.4s linear infinite, tenna-color-cycle 0.5s steps(1, end) infinite;
+    -webkit-animation: tenna-wave 0.4s linear infinite, tenna-color-cycle 0.5s steps(1, end) infinite;
+}
+
+/* 2. The wavy text animation */
+@keyframes tenna-wave {
+    0% { transform: translateY(0); }
+    25% { transform: translateY(-2px) rotate(-1deg); }
+    50% { transform: translateY(0) rotate(1deg); }
+    75% { transform: translateY(2px); }
+    100% { transform: translateY(0) rotate(0); }
+}
+
+/* 3. The color-cycling animation */
+@keyframes tenna-color-cycle {
+    0% { color: #ff69b4; }   /* Hot Pink */
+    25% { color: #00ffff; }   /* Cyan */
+    50% { color: #ffff00; }   /* Yellow */
+    75% { color: #7fff00; }   /* Chartreuse */
+    100% { color: #ff69b4; }   /* Back to Hot Pink */
+}
