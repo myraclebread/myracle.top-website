@@ -4,6 +4,29 @@ let currentPoemContent = '';
 let typingInterval = null;
 
 async function loadRandomPoem() {
+    // Check if the easter egg is active. If so, stop EVERYTHING.
+    if (document.body.classList.contains('big-shot')) {
+        document.getElementById('poemTitle').textContent = '[HYPERLINK BLOCKED]';
+        document.getElementById('poemContent').textContent = '[HYPERLINK BLOCKED]';
+        
+        // Stop any ongoing typewriter effect
+        if (typingInterval) {
+            clearInterval(typingInterval);
+            typingInterval = null;
+        }
+        
+        // Clear stored poem data to fix the "skip" bug
+        currentPoemContent = ''; 
+
+        // Make sure buttons are disabled
+        const refreshBtn = document.getElementById('refreshPoemBtn');
+        const skipBtn = document.getElementById('skipTypingBtn');
+        if (refreshBtn) refreshBtn.disabled = true;
+        if (skipBtn) skipBtn.disabled = true;
+
+        return; // Exit the function
+    }
+
     const titleEl = document.getElementById('poemTitle');
     const contentEl = document.getElementById('poemContent');
     const refreshButton = document.getElementById('refreshPoemBtn');

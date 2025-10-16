@@ -1900,3 +1900,8 @@ body.is-article-visible #wrapper {
 #annoying-dog:hover {
     transform: translateY(0); /* Dog pops up on hover */
 }
+.spamton-image {
+    object-fit: cover; /* Prevents the image from stretching */
+    background-color: black; /* Fills empty space if needed */
+    aspect-ratio: 16/9; /* Or whatever aspect ratio looks best */
+}
