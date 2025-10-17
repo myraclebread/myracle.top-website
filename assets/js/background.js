@@ -5,7 +5,7 @@ let gradientEl;
 let canvas;
 let ctx;
 let particles = [];
-const particleCount = 40;
+const particleCount = 30;
 let currentSection = 'intro';
 let targetBehavior = 'intro';
 let transitionProgress = 1;
@@ -89,6 +89,7 @@ function createParticles() {
             speedY: (Math.random() - 0.5) * 0.5,
             angle: Math.random() * Math.PI * 2,
             orbitSpeed: 0.005 + Math.random() * 0.005,
+            connectionCount: 0
         });
     }
 }
@@ -236,6 +237,7 @@ function animate(currentTime) {
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
     });
+    particles.forEach(p => p.connectionCount = 0);
 
     const connectionDist = behaviors[currentSection].connectionDistance;
     const targetConnectionDist = behaviors[targetBehavior].connectionDistance;
@@ -249,7 +251,8 @@ function animate(currentTime) {
             const dy = particles[i].y - particles[j].y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < currentConnectionDist) {
+            // STEP 2: Check distance AND if both particles have less than 3 connections.
+            if (distance < currentConnectionDist && particles[i].connectionCount < 3 && particles[j].connectionCount < 3) {
                 const opacity = 1 - (distance / currentConnectionDist);
                 ctx.strokeStyle = interpolateColor(behaviors[currentSection].color, behaviors[targetBehavior].color, transitionProgress)
                                   .replace('hsl', 'hsla').replace(')', `, ${opacity * 0.15})`);
@@ -258,11 +261,13 @@ function animate(currentTime) {
                 ctx.moveTo(particles[i].x, particles[i].y);
                 ctx.lineTo(particles[j].x, particles[j].y);
                 ctx.stroke();
+                
+                // STEP 3: If a line was drawn, increment the count for both connected particles.
+                particles[i].connectionCount++;
+                particles[j].connectionCount++;
             }
         }
     }
-    
-
 
     requestAnimationFrame(animate);
 }
