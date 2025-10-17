@@ -11,22 +11,6 @@ let targetBehavior = 'intro';
 let transitionProgress = 1;
 const mouse = { x: null, y: null, radius: 150 };
 
-const knight = {
-    img: new Image(),
-    x: -200,
-    y: window.innerHeight - 150,
-    width: 50,
-    height: 70,
-    animationProgress: 0,
-    animationDuration: 45000 // 45 seconds in milliseconds
-};
-knight.img.src = 'https://static.wikia.nocookie.net/deltarune/images/7/7b/TheRoaringKnightDeltarune.webp';
-
-// An array to store the Knight's last few positions for the trail
-let knightHistory = [];
-const KNIGHT_TRAIL_LENGTH = 30; // How many afterimages to show
-let frameCount = 0;
-const TRAIL_SPACING_FRAMES = 5;
 
 // --- Color & Theme Configuration ---
 const gradientThemes = {
@@ -208,60 +192,12 @@ function interpolateColor(color1, color2, progress) {
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
-function updateKnightPosition(deltaTime) {
-    knight.animationProgress = (knight.animationProgress + deltaTime) % knight.animationDuration;
-    const progress = knight.animationProgress / knight.animationDuration;
-
-    const screenWidth = canvas.width;
-    const startX = -200;
-    const endX = screenWidth + 200;
-
-    if (progress < 0.5) {
-        const phaseProgress = progress * 2;
-        knight.x = startX + (endX - startX) * phaseProgress;
-        const yOffset = -30 * Math.sin(phaseProgress * Math.PI);
-        knight.y = screenWidth > 768 ? window.innerHeight - 150 + yOffset : window.innerHeight - 100 + yOffset;
-    } else {
-        const phaseProgress = (progress - 0.5) * 2;
-        knight.x = endX + (startX - endX) * phaseProgress;
-        const yOffset = -30 * Math.sin(phaseProgress * Math.PI);
-        knight.y = screenWidth > 768 ? window.innerHeight - 300 + yOffset : window.innerHeight - 200 + yOffset;
-    }
-    if (frameCount % TRAIL_SPACING_FRAMES === 0) {
-        knightHistory.push({ x: knight.x, y: knight.y });
-
-        if (knightHistory.length > KNIGHT_TRAIL_LENGTH) {
-            knightHistory.shift();
-        }
-    }
-}
-
-function drawKnightAndTrail() {
-    if (!knight.img.complete) return;
-
-    for (let i = 0; i < knightHistory.length; i++) {
-        const pos = knightHistory[i];
-        const opacity = (i / KNIGHT_TRAIL_LENGTH) * 0.4;
-        
-        ctx.globalAlpha = opacity;
-        ctx.filter = 'brightness(0.7)';
-        ctx.drawImage(knight.img, pos.x, pos.y, knight.width, knight.height);
-    }
-
-    ctx.globalAlpha = 0.6;
-    ctx.filter = 'brightness(0.7)';
-    ctx.drawImage(knight.img, knight.x, knight.y, knight.width, knight.height);
-    
-    ctx.globalAlpha = 1.0;
-    ctx.filter = 'none';
-}
 
 let lastTime = 0;
 function animate(currentTime) {
     if (!ctx || !canvas) return;
     const deltaTime = currentTime - lastTime;
     lastTime = currentTime;
-    frameCount++;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -326,8 +262,7 @@ function animate(currentTime) {
         }
     }
     
-    updateKnightPosition(deltaTime);
-    drawKnightAndTrail();
+
 
     requestAnimationFrame(animate);
 }
