@@ -1,0 +1,79 @@
+{
+  "categories": [
+    {
+      "title": "[DEALS!]",
+      "items": [
+        {
+          "name": "[Kromer]",
+          "icon": "fas fa-coins",
+          "description": "YOUR [Specil] CURRENCY. FOR [Big Shots] ONLY.",
+          "flavor": "(It's... delicious?)"
+        },
+        {
+          "name": "S.POISON",
+          "icon": "fas fa-glass-whiskey",
+          "description": "BUY THIS [Commemorative Ring] AND GET IT 50% OFF.",
+          "flavor": "(Heals 1HP. Tastes like... battery acid.)"
+        },
+        {
+          "name": "[Pipis]",
+          "icon": "fas fa-egg",
+          "description": "AN [Aquatic] [Friend] IN THIS [Trying Time]?",
+          "flavor": "(...It's an invasive species.)"
+        },
+        {
+          "name": "Spamton G. Spamton",
+          "icon": "fas fa-glasses",
+          "description": "THE [Number 1 Rated Salesman1997].",
+          "flavor": "(HE'S EVERYWHERE.)"
+        }
+      ]
+    },
+    {
+      "title": "[LOGS]",
+      "items": [
+        {
+          "name": "LOG. 97",
+          "icon": "fas fa-file-alt",
+          "description": "IT'S... A [Log]... A [Familiar] [Log]...",
+          "flavor": "(The numbers... what do they mean?)"
+        },
+        {
+          "name": "MY [Contacts]",
+          "icon": "fas fa-address-book",
+          "description": "ALL MY [Friends]! THEY'RE ALL [Waiting] FOR MY [Calls]!",
+          "flavor": "(All entries just say 'MIKE'.)"
+        },
+        {
+          "name": "EMPTY[Disk]",
+          "icon": "fas fa-compact-disc",
+          "description": "IT'S [Empty]... WAITING FOR... [Heaven].",
+          "flavor": "(A place to put my [Hopes] and [Dreams].)"
+        }
+      ]
+    },
+    {
+      "title": "[HYPERLINK BLOCKED]",
+      "items": [
+        {
+          "name": "[Hyperlink Blocked]",
+          "icon": "fas fa-link-slash",
+          "description": "[Hyperlink Blocked]",
+          "flavor": "([Hyperlink Blocked])"
+        },
+        {
+          "name": "[Hyperlink Blocked]",
+          "icon": "fas fa-link-slash",
+          "description": "[Hyperlink Blocked]",
+          "flavor": "([Hyperlink Blocked])"
+        },
+        {
+          "name": "[Hyperlink Blocked]",
+          "icon": "fas fa-link-slash",
+          "description": "[Hyperlink Blocked]",
+          "flavor": "([Hyperlink Blocked])"
+        }
+      ]
+    }
+  ]
+}

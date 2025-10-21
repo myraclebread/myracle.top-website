@@ -157,10 +157,25 @@ function loadInventory() {
     var $tabLinks = $("#inventory-tab-links");
     var $tabContent = $("#inventory-tab-content");
 
+    // Check if Konami code is active by looking for the body class
+    var isBigShot = document.body.classList.contains("big-shot");
+    
+    // Choose the correct JSON file path
+    var jsonPath = isBigShot ? "assets/data/spamton-uses.json" : "assets/data/uses.json";
+    
+    // We also need to clear the inventory if it's already loaded,
+    // in case the user activates the code *while* on the /uses page.
+    // This forces it to reload with the new file.
+    if (isBigShot && $tabLinks.children().length > 0) {
+        $tabLinks.empty();
+        $tabContent.empty();
+    }
+
     // Only load the content if the tabs are currently empty
     if ($tabLinks.children().length === 0) {
-        // Use jQuery's getJSON to fetch the file
-        $.getJSON("assets/data/uses.json", function (data) {
+        
+        // Use jQuery's getJSON to fetch the (now dynamic) file path
+        $.getJSON(jsonPath, function (data) { // <--- VARIABLE IS USED HERE
             var $iconEl = $("#inventory-item-icon");
             var $nameEl = $("#inventory-item-name");
             var $descEl = $("#inventory-item-desc");
@@ -169,7 +184,8 @@ function loadInventory() {
             // Loop over categories with jQuery's .each
             $.each(data.categories, function (i, category) {
                 // 1. Create the tab link
-                var categoryId = category.title.toLowerCase().replace(' & ', '-');
+                // Made the ID safer for all characters
+                var categoryId = category.title.toLowerCase().replace(/[^a-z0-9]/g, '-'); 
                 var $tabLink = $(
                     `<div class="tab-link" data-tab="${categoryId}">${category.title}</div>`
                 );
@@ -196,35 +212,27 @@ function loadInventory() {
                 $tabContent.append($itemList);
             });
 
-            // 3. Add click handler for the tabs (NEW ANIMATION LOGIC)
+            // 3. Add click handler for the tabs (ANIMATION LOGIC)
             $tabLinks.on("click", ".tab-link", function () {
                 var $clickedTab = $(this);
                 var tabId = $clickedTab.data("tab");
 
-                // Do nothing if we're clicking the tab that's already active
                 if ($clickedTab.hasClass("active")) {
                     return;
                 }
 
-                // Set active state on tab link
                 $tabLinks.find(".tab-link").removeClass("active");
                 $clickedTab.addClass("active");
 
                 var $currentList = $tabContent.find(".item-list.active");
                 var $nextList = $tabContent.find("#" + tabId);
 
-                // Fade out the current list
                 $currentList.removeClass("active");
 
-                // Wait for the fade-out (300ms) before fading in the new one
-                // This MUST match your CSS transition duration
                 setTimeout(function() {
-                    // Fade in the new list
                     $nextList.addClass("active");
-                    
-                    // Automatically click the first item in that new list
                     $nextList.find(".inventory-item").first().trigger("click");
-                }, 300); 
+                }, 300); // This MUST match your CSS transition duration
             });
 
             // 4. Add click handler for the items (no change)
@@ -239,14 +247,14 @@ function loadInventory() {
                 $flavorEl.text(itemData.flavor);
             });
 
-            // 5. Activate the first tab by default (Slightly different logic)
-            // We just show it directly, no animation needed on load
+            // 5. Activate the first tab by default
             $tabLinks.find(".tab-link").first().addClass("active");
             var $firstList = $tabContent.find(".item-list").first();
-            $firstList.addClass("active");            $firstList.find(".inventory-item").first().trigger("click");
+            $firstList.addClass("active");
+            $firstList.find(".inventory-item").first().trigger("click");
 
         }).fail(function () {
-            console.error("Error loading inventory:");
+            console.error("Error loading inventory:", jsonPath);
             $tabLinks.html(
                 "Error loading inventory. (Tell Kris to check the console!)"
             );
