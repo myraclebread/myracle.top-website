@@ -1905,3 +1905,163 @@ body.is-article-visible #wrapper {
     background-color: black; /* Fills empty space if needed */
     aspect-ratio: 16/9; /* Or whatever aspect ratio looks best */
 }
+
+/* ===== Inventory / Uses Page (Tabbed) ===== */
+
+.inventory-container {
+    display: flex;
+    flex-wrap: wrap; /* Stacks on mobile */
+    width: 100%;
+    align-items: flex-start; /* Aligns boxes to the top */
+    background-color: #000;
+    border: 2px solid #fff;
+}
+
+/* New Left Panel (holds tabs and lists) */
+.inventory-left-panel {
+    flex: 1; /* Takes up 1 part of the space */
+    min-width: 200px;
+    border-right: 2px solid #fff;
+    font-family: 'VT323', monospace;
+    font-size: 1.25rem;
+}
+
+/* Tab Bar */
+.inventory-tabs {
+    display: flex;
+    border-bottom: 2px solid #fff;
+    background-color: #111;
+    flex-wrap: wrap;
+}
+
+.tab-link {
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.1rem;
+    padding: 0.75rem 1rem;
+    color: #888;
+    cursor: pointer;
+    border-left: 1px solid #444;
+}
+
+.tab-link:first-child {
+    border-left: none;
+}
+
+.tab-link:hover {
+    background-color: #222;
+    color: #fff;
+}
+
+.tab-link.active {
+    background-color: #000;
+    color: #ff69b4; /* Pink */
+}
+
+/* Item Lists Area */
+.inventory-content {
+    padding: 0.5rem;
+}
+
+/* Each item list is hidden by default */
+.inventory-content .item-list {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    /* This is the animation! */
+    transition: opacity 0.3s ease-out, max-height 0.3s ease-in-out;
+}
+
+/* The active item list is shown */
+.inventory-content .item-list.active {
+    opacity: 1;
+    max-height: 40rem; /* A large-enough value to let it slide open */
+}
+
+/* Item List styles (same as before) */
+.item-list .inventory-item {
+    font-family: 'VT323', monospace;
+    padding: 0.4rem 0.5rem;
+    cursor: pointer;
+    position: relative;
+    color: #ccc;
+    transition: none;
+    border-bottom: none;
+}
+
+.item-list .inventory-item::before {
+    content: '>';
+    font-family: 'VT323', monospace;
+    color: #ff69b4;
+    position: absolute;
+    left: 0;
+    top: 0.4rem;
+    opacity: 0;
+}
+
+.item-list .inventory-item:hover,
+.item-list .inventory-item.selected {
+    background-color: #333;
+    color: #fff;
+}
+
+.item-list .inventory-item:hover::before,
+.item-list .inventory-item.selected::before {
+    opacity: 1;
+}
+
+/* Description Box (same as before, but no 'sticky') */
+.item-display-box {
+    flex: 2;
+    min-width: 300px;
+    padding: 1.5rem;
+    background-color: #000;
+}
+
+.item-display-content {
+    text-align: center;
+}
+
+.item-display-content #inventory-item-icon {
+    font-size: 4rem;
+    color: #ff69b4;
+    margin-bottom: 1rem;
+}
+
+.item-display-content #inventory-item-name {
+    font-family: 'VT323', monospace;
+    font-size: 2rem;
+    color: #fff;
+    text-transform: none;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+.item-display-content #inventory-item-desc {
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    color: #ccc;
+    line-height: 1.5;
+}
+
+.item-display-content .flavor-text {
+    font-family: 'VT323', monospace;
+    font-size: 1.25rem;
+    color: #ff69b4;
+    margin-top: 1rem;
+}
+
+/* Responsive stacking */
+@media screen and (max-width: 736px) {
+    .inventory-container {
+        flex-direction: column;
+    }
+    .inventory-left-panel {
+        border-right: none;
+        border-bottom: 2px solid #fff;
+        width: 100%;
+    }
+    
+}

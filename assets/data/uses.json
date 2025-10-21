@@ -1,0 +1,287 @@
+{
+  "categories": [
+    {
+      "title": "HARDWARE",
+      "items": [
+        {
+          "name": "Asus ROG Strix Scar 15 G533QR",
+          "icon": "fas fa-laptop-code",
+          "description": "My daily driver for college and coding. It can game c:.",
+          "flavor": "(It's filled with DETERMINATION.)"
+        },
+        {
+          "name": "Raspberry Pi 4 Model B",
+          "icon": "fas fa-microchip",
+          "description": "The heart of my Face ID project and a home Pi-hole.",
+          "flavor": "(A tiny computer with big dreams.)"
+        },
+        {
+          "name": "Mechanical Keyboard",
+          "icon": "fas fa-keyboard",
+          "description": "A Madlions Mad60 HE with magnetic switches.",
+          "flavor": "(The sound of *clack* *clack* *clack*...)"
+        },
+        {
+          "name": "VXE R1 SE+",
+          "icon": "fas fa-mouse",
+          "description": "A simple, reliable wireless mouse.",
+          "flavor": "(...It squeaks.)"
+        },
+        {
+          "name": "Acer Nitro KG240YM5",
+          "icon": "fas fa-desktop",
+          "description": "A simple 1080p screen with 180Hz refresh rate. Gets the job done! (And also games hehe)",
+          "flavor": "(A window into the Cyber World.)"
+        },
+        {
+          "name": "KZ Castor Harman",
+          "icon": "fas fa-headphones-alt",
+          "description": "Wired earphones for music and games",
+          "flavor": "(Blocks out unwanted [Hyperlink Blocked].)"
+        },
+        {
+          "name": "Kingston 64GB USB",
+          "icon": "fas fa-key",
+          "description": "For moving files and ISOs.",
+          "flavor": "(A [KeyGen] for physical doors?)"
+        },
+        {
+          "name": "My Samsung Phone",
+          "icon": "fas fa-mobile-alt",
+          "description": "For testing mobile layouts and... well, calls.",
+          "flavor": "(It's trying its best.)"
+        },
+        {
+          "name": "Analog Notebook",
+          "icon": "fas fa-book-dead",
+          "description": "For when a digital note just won't stick.",
+          "flavor": "(Scribbled with [Strange Symbols].)"
+        }
+      ]
+    },
+    {
+      "title": "GAMES",
+      "items": [
+        {
+          "name": "Counter-Strike",
+          "icon": "fas fa-crosshairs",
+          "description": "My most played game. Countless hours on record.",
+          "flavor": "([9999] hours logged.)"
+        },
+        {
+          "name": "Team Fortress 2",
+          "icon": "fas fa-hat-cowboy",
+          "description": "My top 2 most played. The original hat simulator.",
+          "flavor": "(Hats acquired: ???)"
+        },
+        {
+          "name": "Deep Rock Galactic",
+          "icon": "fas fa-pickaxe",
+          "description": "Co-op mining and bug hunting with dwarves.",
+          "flavor": "(ROCK AND STONE!)"
+        },
+        {
+          "name": "Left 4 Dead 2",
+          "icon": "fas fa-biohazard",
+          "description": "Classic zombie co-op survival.",
+          "flavor": "(PILLS HERE!)"
+        },
+        {
+          "name": "Terraria",
+          "icon": "fas fa-tree",
+          "description": "2D Minecraft with way more bosses.",
+          "flavor": "(The world is your canvas... and your enemy.)"
+        },
+        {
+          "name": "The Binding of Isaac",
+          "icon": "fas fa-bomb",
+          "description": "The indie rogue-like that started it all.",
+          "flavor": "(Found in the [Basement].)"
+        },
+        {
+          "name": "Grand Theft Auto V",
+          "icon": "fas fa-car-crash",
+          "description": "Causing chaos in Los Santos.",
+          "flavor": "(Why'd I move here? I guess it was the [Kromer].)"
+        },
+        {
+          "name": "Risk of Rain 2",
+          "icon": "fas fa-bolt",
+          "description": "3D rogue-like. The chaos scales infinitely.",
+          "flavor": "(...and so I left, with [Amazing Items].)"
+        },
+        {
+          "name": "Astroneer",
+          "icon": "fas fa-rocket",
+          "description": "Co-op space exploration and base building.",
+          "flavor": "(The ground... it is pliable.)"
+        },
+        {
+          "name": "Balatro",
+          "icon": "fas fa-star",
+          "description": "The poker rogue-like that took over my life.",
+          "flavor": "(Just one more run. The Jokers call.)"
+        },
+        {
+          "name": "Stardew Valley",
+          "icon": "fas fa-seedling",
+          "description": "The perfect cozy farming and life sim.",
+          "flavor": "(A gift from [Grandpa].)"
+        },
+        {
+          "name": "Minecraft",
+          "icon": "fas fa-cube",
+          "description": "The original. Endless building and exploring.",
+          "flavor": "(Don't dig straight down.)"
+        },
+        {
+          "name": "Undertale & Deltarune",
+          "icon": "fas fa-heart",
+          "description": "The games that inspired this whole website.",
+          "flavor": "(Knowing these games fill you with DETERMINATION.)"
+        },
+        {
+          "name": "Cult of the Lamb",
+          "icon": "fas fa-paw",
+          "description": "A cute and creepy cult management sim.",
+          "flavor": "(For the one true [Lamb].)"
+        }
+      ]
+    },
+    {
+      "title": "SOFTWARE",
+      "items": [
+        {
+          "name": "VS Code",
+          "icon": "fas fa-code",
+          "description": "Where the magic (and bugs) happen.",
+          "flavor": "(The 'SynthWave '84' theme is key.)"
+        },
+        {
+          "name": "Packet Tracer",
+          "icon": "fas fa-project-diagram",
+          "description": "For building and breaking virtual networks.",
+          "flavor": "(Just like the Cyber World...)"
+        },
+        {
+          "name": "Wireshark",
+          "icon": "fas fa-shark",
+          "description": "To see what's *really* going on in the packets.",
+          "flavor": "(...Fin.)"
+        },
+        {
+          "name": "Windows 11 Pro",
+          "icon": "fab fa-windows",
+          "description": "I haven't explored that much about other OS yet...But I will get there eventually...",
+          "flavor": "(Freedom!)"
+        },
+        {
+          "name": "Firefox",
+          "icon": "fab fa-firefox-browser",
+          "description": "My main browser. Love the privacy features. (And the Adblocker!)",
+          "flavor": "(For surfing the 'Net...)"
+        },
+        {
+          "name": "Nmap",
+          "icon": "fas fa-network-wired",
+          "description": "The classic tool for network discovery.",
+          "flavor": "(Knock, knock...)"
+        },
+        {
+          "name": "GIMP",
+          "icon": "fas fa-paint-brush",
+          "description": "For when I need to quickly edit an image.",
+          "flavor": "(Free as in... free.)"
+        },
+        {
+          "name": "Windows Terminal",
+          "icon": "fas fa-terminal",
+          "description": "My main terminal, customized with Oh My Posh.",
+          "flavor": "(The gateway to the [Cyber World].)"
+        }
+      ]
+    },
+    {
+      "title": "SERVICES & DEV",
+      "items": [
+        {
+          "name": "GitHub",
+          "icon": "fab fa-github",
+          "description": "Hosts all my code... including this website!",
+          "flavor": "(My personal code 'Fountain'.)"
+        },
+        {
+          "name": "Discord",
+          "icon": "fab fa-discord",
+          "description": "For chatting with friends and dev communities.",
+          "flavor": "(The chat is... *darker, yet darker*.)"
+        },
+        {
+          "name": "Spotify",
+          "icon": "fab fa-spotify",
+          "description": "Lofi beats to code/study to.",
+          "flavor": "(Playing 'BIG SHOT' on repeat.)"
+        },
+        {
+          "name": "Vercel",
+          "icon": "fas fa-cloud-upload-alt",
+          "description": "Hosts sites for free from my GitHub repo.",
+          "flavor": "(It's... fast.)"
+        },
+        {
+          "name": "YouTube",
+          "icon": "fab fa-youtube",
+          "description": "For tech tutorials and... music, mostly.",
+          "flavor": "(A [Fountain] of endless content.)"
+        }
+      ]
+    },
+    {
+      "title": "POCKET",
+      "items": [
+        {
+          "name": "Ralsei Plushie",
+          "icon": "fas fa-hat-wizard",
+          "description": "A fluffy boy. Very huggable.",
+          "flavor": "(A fluffy boy. +5 COMFORT.)"
+        },
+        {
+          "name": "Moss",
+          "icon": "fas fa-leaf",
+          "description": "A small clump of delicious moss.",
+          "flavor": "(You feel... healthy.)"
+        },
+        {
+          "name": "Glowshard",
+          "icon": "fas fa-gem",
+          "description": "A small, colorful rock. It glows with a faint, peaceful light.",
+          "flavor": "(It makes a pleasant *clink* noise.)"
+        },
+        {
+          "name": "Dog Residue",
+          "icon": "fas fa-bone",
+          "description": "A strange substance left by a small, white dog.",
+          "flavor": "(An endless supply of dog-related junk...)"
+        },
+        {
+          "name": "Ralsei's Manual",
+          "icon": "fas fa-book",
+          "description": "A helpful guide to the Cyber World, handmade by Ralsei.",
+          "flavor": "(Contains... helpful advice?)"
+        },
+        {
+          "name": "Lucky RJ45 Cap",
+          "icon": "fas fa-ethernet",
+          "description": "An old ethernet port cover. You kept it for some reason.",
+          "flavor": "(Protects unused ports. And your [SOUL].)"
+        },
+        {
+          "name": "Mysterious Charm",
+          "icon": "fas fa-heart",
+          "description": "A small, glowing charm you found at the bottom of the list.",
+          "flavor": "(You really read all of this for me 😭)"
+        }
+      ]
+    }
+  ]
+}

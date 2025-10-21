@@ -7,7 +7,6 @@
     $main = $("#main"),
     $main_articles = $main.children("article");
 
-
   // Breakpoints.
   breakpoints({
     xlarge: ["1281px", "1680px"],
@@ -60,64 +59,63 @@
     if ($article.length == 0) return;
 
     if (locked || (typeof initial != "undefined" && initial === true)) {
-        $body.addClass("is-switching");
-        $body.addClass("is-article-visible");
-        $main_articles.removeClass("active");
-        $header.hide();
-        $footer.hide();
-        $main.show();
-        $article.show();
-        $article.addClass("active");
-        locked = false;
-        setTimeout(
-            function () {
-                $body.removeClass("is-switching");
-            },
-            initial ? 1000 : 0
-        );
+      $body.addClass("is-switching");
+      $body.addClass("is-article-visible");
+      $main_articles.removeClass("active");
+      $header.hide();
+      $footer.hide();
+      $main.show();
+      $article.show();
+      $article.addClass("active");
+      locked = false;
+      setTimeout(
+        function () {
+          $body.removeClass("is-switching");
+        },
+        initial ? 1000 : 0
+      );
 
-        return;
+      return;
     }
 
     locked = true;
 
     if ($body.hasClass("is-article-visible")) {
-        var $currentArticle = $main_articles.filter(".active");
-        $currentArticle.removeClass("active");
+      var $currentArticle = $main_articles.filter(".active");
+      $currentArticle.removeClass("active");
+      setTimeout(function () {
+        $currentArticle.hide();
+        $article.show();
         setTimeout(function () {
-            $currentArticle.hide();
-            $article.show();
-            setTimeout(function () {
-                $article.addClass("active");
-                $window.scrollTop(0).triggerHandler("resize.flexbox-fix");
-                setTimeout(function () {
-                    locked = false;
-                }, delay);
-            }, 25);
-        }, delay);
+          $article.addClass("active");
+          $window.scrollTop(0).triggerHandler("resize.flexbox-fix");
+          setTimeout(function () {
+            locked = false;
+          }, delay);
+        }, 25);
+      }, delay);
     } else {
-        $body.addClass("is-article-visible");
+      $body.addClass("is-article-visible");
+      setTimeout(function () {
+        $header.hide();
+        $footer.hide();
+        $main.show();
+        $article.show();
         setTimeout(function () {
-            $header.hide();
-            $footer.hide();
-            $main.show();
-            $article.show();
-            setTimeout(function () {
-                $article.addClass("active");
-                $window.scrollTop(0).triggerHandler("resize.flexbox-fix");
-                setTimeout(function () {
-                    locked = false;
-                }, delay);
-            }, 25);
-        }, delay);
+          $article.addClass("active");
+          $window.scrollTop(0).triggerHandler("resize.flexbox-fix");
+          setTimeout(function () {
+            locked = false;
+          }, delay);
+        }, 25);
+      }, delay);
     }
-};
+  };
 
   $main._hide = function (addState) {
     var $article = $main_articles.filter(".active");
 
     if (!$body.hasClass("is-article-visible")) return;
-    
 
     if (typeof addState != "undefined" && addState === true)
       history.pushState(null, null, "#");
@@ -155,6 +153,107 @@
     }, delay);
   };
 
+function loadInventory() {
+    var $tabLinks = $("#inventory-tab-links");
+    var $tabContent = $("#inventory-tab-content");
+
+    // Only load the content if the tabs are currently empty
+    if ($tabLinks.children().length === 0) {
+        // Use jQuery's getJSON to fetch the file
+        $.getJSON("assets/data/uses.json", function (data) {
+            var $iconEl = $("#inventory-item-icon");
+            var $nameEl = $("#inventory-item-name");
+            var $descEl = $("#inventory-item-desc");
+            var $flavorEl = $("#inventory-item-flavor");
+
+            // Loop over categories with jQuery's .each
+            $.each(data.categories, function (i, category) {
+                // 1. Create the tab link
+                var categoryId = category.title.toLowerCase().replace(' & ', '-');
+                var $tabLink = $(
+                    `<div class="tab-link" data-tab="${categoryId}">${category.title}</div>`
+                );
+                $tabLinks.append($tabLink);
+
+                // 2. Create the item list panel for this category
+                var $itemList = $(`<div class="item-list" id="${categoryId}"></div>`);
+                var inventoryHtml = "";
+
+                // Loop over items in this category
+                $.each(category.items, function (j, item) {
+                    inventoryHtml += `
+                        <div class="inventory-item" 
+                            data-name="${item.name}" 
+                            data-icon="${item.icon}" 
+                            data-desc="${item.description}" 
+                            data-flavor="${item.flavor}">
+                            ${item.name}
+                        </div>
+                    `;
+                });
+
+                $itemList.html(inventoryHtml);
+                $tabContent.append($itemList);
+            });
+
+            // 3. Add click handler for the tabs (NEW ANIMATION LOGIC)
+            $tabLinks.on("click", ".tab-link", function () {
+                var $clickedTab = $(this);
+                var tabId = $clickedTab.data("tab");
+
+                // Do nothing if we're clicking the tab that's already active
+                if ($clickedTab.hasClass("active")) {
+                    return;
+                }
+
+                // Set active state on tab link
+                $tabLinks.find(".tab-link").removeClass("active");
+                $clickedTab.addClass("active");
+
+                var $currentList = $tabContent.find(".item-list.active");
+                var $nextList = $tabContent.find("#" + tabId);
+
+                // Fade out the current list
+                $currentList.removeClass("active");
+
+                // Wait for the fade-out (300ms) before fading in the new one
+                // This MUST match your CSS transition duration
+                setTimeout(function() {
+                    // Fade in the new list
+                    $nextList.addClass("active");
+                    
+                    // Automatically click the first item in that new list
+                    $nextList.find(".inventory-item").first().trigger("click");
+                }, 300); 
+            });
+
+            // 4. Add click handler for the items (no change)
+            $tabContent.on("click", ".inventory-item", function () {
+                var $itemEl = $(this);
+                $itemEl.closest(".item-list").find(".inventory-item").removeClass("selected");
+                $itemEl.addClass("selected");
+                var itemData = $itemEl.data();
+                $iconEl.attr("class", itemData.icon);
+                $nameEl.text(itemData.name);
+                $descEl.text(itemData.desc);
+                $flavorEl.text(itemData.flavor);
+            });
+
+            // 5. Activate the first tab by default (Slightly different logic)
+            // We just show it directly, no animation needed on load
+            $tabLinks.find(".tab-link").first().addClass("active");
+            var $firstList = $tabContent.find(".item-list").first();
+            $firstList.addClass("active");            $firstList.find(".inventory-item").first().trigger("click");
+
+        }).fail(function () {
+            console.error("Error loading inventory:");
+            $tabLinks.html(
+                "Error loading inventory. (Tell Kris to check the console!)"
+            );
+        });
+    }
+}
+
   // Articles.
   $main_articles.each(function () {
     var $this = $(this);
@@ -191,6 +290,11 @@
     } else if ($main_articles.filter(location.hash).length > 0) {
       event.preventDefault();
       event.stopPropagation();
+
+      if (location.hash == "#uses") {
+        loadInventory();
+      }
+
       $main._show(location.hash.substr(1));
     }
   });
@@ -217,6 +321,10 @@
 
   if (location.hash != "" && location.hash != "#")
     $window.on("load", function () {
+      if (location.hash == "#uses") {
+        loadInventory();
+      }
       $main._show(location.hash.substr(1), true);
+      s;
     });
 })(jQuery);
