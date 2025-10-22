@@ -1,7 +1,9 @@
 @import url(fontawesome-all.min.css);
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300italic,600italic,300,600");
 html {
-    cursor: url(https://www.spriters-resource.com/resources/icons/121/123656.png) 16 16, auto;
+  cursor: url(https://www.spriters-resource.com/resources/icons/121/123656.png)
+      16 16,
+    auto;
 }
 
 html,
@@ -172,7 +174,7 @@ textarea {
 
 html {
   box-sizing: border-box;
-  background-color: #1A0526;
+  background-color: #1a0526;
 }
 
 *,
@@ -197,7 +199,6 @@ body.is-preload *:after {
   -ms-transition: none !important;
   transition: none !important;
 }
-
 
 #particles-bg {
   position: fixed;
@@ -1807,261 +1808,308 @@ button:hover {
 
 /* 1. The main link style */
 .tenna-link {
-    display: inline-block; /* Allows us to apply transforms */
-    font-family: 'VT323', monospace; /* A great free pixel font */
-    text-transform: uppercase;
-    font-size: 1.1em; /* A little bigger to stand out */
-    border-bottom: none; /* Removes the default dotted underline */
-    animation: tenna-wave 0.8s linear infinite, tenna-color-cycle 1s steps(1, end) infinite;
-    -webkit-animation: tenna-wave 0.8s linear infinite, tenna-color-cycle 1s steps(1, end) infinite;
+  display: inline-block; /* Allows us to apply transforms */
+  font-family: "VT323", monospace; /* A great free pixel font */
+  text-transform: uppercase;
+  font-size: 1.1em; /* A little bigger to stand out */
+  border-bottom: none; /* Removes the default dotted underline */
+  animation: tenna-wave 0.8s linear infinite,
+    tenna-color-cycle 1s steps(1, end) infinite;
+  -webkit-animation: tenna-wave 0.8s linear infinite,
+    tenna-color-cycle 1s steps(1, end) infinite;
 }
 
 .tenna-link:hover {
-    /* Make the animation faster and more intense on hover! */
-    animation: tenna-wave 0.4s linear infinite, tenna-color-cycle 0.5s steps(1, end) infinite;
-    -webkit-animation: tenna-wave 0.4s linear infinite, tenna-color-cycle 0.5s steps(1, end) infinite;
+  /* Make the animation faster and more intense on hover! */
+  animation: tenna-wave 0.4s linear infinite,
+    tenna-color-cycle 0.5s steps(1, end) infinite;
+  -webkit-animation: tenna-wave 0.4s linear infinite,
+    tenna-color-cycle 0.5s steps(1, end) infinite;
 }
 
 /* 2. The wavy text animation */
 @keyframes tenna-wave {
-    0% { transform: translateY(0); }
-    25% { transform: translateY(-2px) rotate(-1deg); }
-    50% { transform: translateY(0) rotate(1deg); }
-    75% { transform: translateY(2px); }
-    100% { transform: translateY(0) rotate(0); }
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-2px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(0) rotate(1deg);
+  }
+  75% {
+    transform: translateY(2px);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
 }
 
 /* 3. The color-cycling animation */
 @keyframes tenna-color-cycle {
-    0% { color: #ff69b4; }   /* Hot Pink */
-    25% { color: #00ffff; }   /* Cyan */
-    50% { color: #ffff00; }   /* Yellow */
-    75% { color: #7fff00; }   /* Chartreuse */
-    100% { color: #ff69b4; }   /* Back to Hot Pink */
+  0% {
+    color: #ff69b4;
+  } /* Hot Pink */
+  25% {
+    color: #00ffff;
+  } /* Cyan */
+  50% {
+    color: #ffff00;
+  } /* Yellow */
+  75% {
+    color: #7fff00;
+  } /* Chartreuse */
+  100% {
+    color: #ff69b4;
+  } /* Back to Hot Pink */
 }
 
-body.big-shot h1, body.big-shot h2, body.big-shot p, body.big-shot a {
-    animation: tenna-color-cycle 0.5s steps(1, end) infinite;
+body.big-shot h1,
+body.big-shot h2,
+body.big-shot p,
+body.big-shot a {
+  animation: tenna-color-cycle 0.5s steps(1, end) infinite;
 }
 body.big-shot h1::before {
-    content: '[BIG SHOT] ';
+  content: "[BIG SHOT] ";
 }
-
 
 body.is-article-visible #footer {
-    opacity: 1;
-    filter: none;
-    transform: none;
+  opacity: 1;
+  filter: none;
+  transform: none;
 }
-
 
 body.is-article-visible #wrapper {
-    justify-content: space-between;
+  justify-content: space-between;
 }
 .konami-hint {
-    margin-top: 1.5rem;
-    text-align: center;
-    user-select: none; /* Prevents text selection */
+  margin-top: 1.5rem;
+  text-align: center;
+  user-select: none; /* Prevents text selection */
 }
 
 /* Style for both the icons and the letters */
 .konami-hint i,
 .konami-hint span {
-    font-size: 0.8rem; /* Make icons small */
-    color: rgba(255, 255, 255, 0.06); /* Make them faint */
-    margin: 0 0.2rem;
-    transition: color 0.3s ease;
-    display: inline-block; /* Helps with alignment */
-    vertical-align: middle; /* Aligns them on the same line */
+  font-size: 0.8rem; /* Make icons small */
+  color: rgba(255, 255, 255, 0.06); /* Make them faint */
+  margin: 0 0.2rem;
+  transition: color 0.3s ease;
+  display: inline-block; /* Helps with alignment */
+  vertical-align: middle; /* Aligns them on the same line */
 }
 
 /* Add bold weight to the letters to match the icons */
 .konami-hint span {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 /* Make everything brighter on hover */
 .konami-hint:hover i,
 .konami-hint:hover span {
-    color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 #annoying-dog {
-    position: fixed;
-    bottom: 5px;
-    right: 15px;
-    width: 60px; /* New size for this GIF */
-    transform: translateY(75%); /* Hide most of the dog */
-    transition: transform 0.3s ease;
-    z-index: 100;
-    cursor: pointer;
+  position: fixed;
+  bottom: 5px;
+  right: 15px;
+  width: 60px; /* New size for this GIF */
+  transform: translateY(75%); /* Hide most of the dog */
+  transition: transform 0.3s ease;
+  z-index: 100;
+  cursor: pointer;
 }
 
 #annoying-dog:hover {
-    transform: translateY(0); /* Dog pops up on hover */
+  transform: translateY(0); /* Dog pops up on hover */
 }
 .spamton-image {
-    object-fit: cover; /* Prevents the image from stretching */
-    background-color: black; /* Fills empty space if needed */
-    aspect-ratio: 16/9; /* Or whatever aspect ratio looks best */
+  object-fit: cover; /* Prevents the image from stretching */
+  background-color: black; /* Fills empty space if needed */
+  aspect-ratio: 16/9; /* Or whatever aspect ratio looks best */
 }
 
-/* ===== Inventory / Uses Page (Tabbed) ===== */
+/* ===== Inventory / Uses Page (Separated Layout) ===== */
 
-.inventory-container {
+/* Separate Display Box Section - Above the list */
+.item-display-section {
+    margin: 0 0 2rem 0;
+    background: rgba(27, 31, 34, 0.85);
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    padding: 2.5rem;
+    text-align: center;
     display: flex;
-    flex-wrap: wrap; /* Stacks on mobile */
-    width: 100%;
-    align-items: flex-start; /* Aligns boxes to the top */
-    background-color: #000;
-    border: 2px solid #fff;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* New Left Panel (holds tabs and lists) */
-.inventory-left-panel {
-    flex: 1; /* Takes up 1 part of the space */
-    min-width: 200px;
-    border-right: 2px solid #fff;
-    font-family: 'VT323', monospace;
-    font-size: 1.25rem;
+.item-display-section #inventory-item-icon {
+    font-size: 4rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+    display: block;
+    width: 100%;
+}
+
+.item-display-section #inventory-item-name {
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    border-bottom: solid 1px #ffffff;
+    padding-bottom: 0.5rem;
+    display: block;
+    width: auto;
+}
+
+.item-display-section #inventory-item-desc {
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 300;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.65;
+    margin-bottom: 1rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.item-display-section .flavor-text {
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    border-left: solid 2px rgba(255, 255, 255, 0.3);
+    padding-left: 1rem;
+    text-align: left;
+    display: inline-block;
+    max-width: 600px;
+}
+
+/* Inventory Container - Now just holds the list */
+.inventory-container {
+    background: rgba(27, 31, 34, 0.85);
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 /* Tab Bar */
 .inventory-tabs {
     display: flex;
-    border-bottom: 2px solid #fff;
-    background-color: #111;
     flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    gap: 0.5rem;
 }
 
 .tab-link {
     font-family: "Source Sans Pro", sans-serif;
     font-weight: 600;
     text-transform: uppercase;
+    letter-spacing: 0.2rem;
     font-size: 0.8rem;
-    letter-spacing: 0.1rem;
-    padding: 0.75rem 1rem;
-    color: #888;
+    padding: 0 1.25rem;
+    height: 2.75rem;
+    line-height: 2.75rem;
+    color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
-    border-left: 1px solid #444;
-}
-
-.tab-link:first-child {
-    border-left: none;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+    background-color: transparent;
+    border: 0;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .tab-link:hover {
-    background-color: #222;
-    color: #fff;
+    background-color: rgba(255, 255, 255, 0.075);
+    color: #ffffff;
 }
 
 .tab-link.active {
-    background-color: #000;
-    color: #ff69b4; /* Pink */
+    background-color: rgba(255, 255, 255, 0.075);
+    color: #ffffff;
+    box-shadow: inset 0 0 0 1px #ffffff;
 }
 
-/* Item Lists Area */
+/* Item Lists */
 .inventory-content {
-    padding: 0.5rem;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.5rem;
 }
 
-/* Each item list is hidden by default */
 .inventory-content .item-list {
     opacity: 0;
     max-height: 0;
     overflow: hidden;
-    /* This is the animation! */
     transition: opacity 0.3s ease-out, max-height 0.3s ease-in-out;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.5rem;
 }
 
-/* The active item list is shown */
 .inventory-content .item-list.active {
     opacity: 1;
-    max-height: 40rem; /* A large-enough value to let it slide open */
+    max-height: 100rem;
 }
 
-/* Item List styles (same as before) */
-.item-list .inventory-item {
-    font-family: 'VT323', monospace;
-    padding: 0.4rem 0.5rem;
+.inventory-item {
+    padding: 0.75rem 1rem;
     cursor: pointer;
     position: relative;
-    color: #ccc;
-    transition: none;
-    border-bottom: none;
-}
-
-.item-list .inventory-item::before {
-    content: '>';
-    font-family: 'VT323', monospace;
-    color: #ff69b4;
-    position: absolute;
-    left: 0;
-    top: 0.4rem;
-    opacity: 0;
-}
-
-.item-list .inventory-item:hover,
-.item-list .inventory-item.selected {
-    background-color: #333;
-    color: #fff;
-}
-
-.item-list .inventory-item:hover::before,
-.item-list .inventory-item.selected::before {
-    opacity: 1;
-}
-
-/* Description Box (same as before, but no 'sticky') */
-.item-display-box {
-    flex: 2;
-    min-width: 300px;
-    padding: 1.5rem;
-    background-color: #000;
-}
-
-.item-display-content {
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s ease-in-out;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 300;
+    font-size: 0.9rem;
     text-align: center;
 }
 
-.item-display-content #inventory-item-icon {
-    font-size: 4rem;
-    color: #ff69b4;
-    margin-bottom: 1rem;
+.inventory-item:hover {
+    background-color: rgba(255, 255, 255, 0.075);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
-.item-display-content #inventory-item-name {
-    font-family: 'VT323', monospace;
-    font-size: 2rem;
-    color: #fff;
-    text-transform: none;
-    letter-spacing: 1px;
-    margin-bottom: 1rem;
+.inventory-item.selected {
+    background-color: rgba(255, 255, 255, 0.075);
+    color: #ffffff;
+    border-color: #ffffff;
 }
 
-.item-display-content #inventory-item-desc {
-    font-family: 'VT323', monospace;
-    font-size: 1.1rem;
-    color: #ccc;
-    line-height: 1.5;
-}
-
-.item-display-content .flavor-text {
-    font-family: 'VT323', monospace;
-    font-size: 1.25rem;
-    color: #ff69b4;
-    margin-top: 1rem;
-}
-
-/* Responsive stacking */
+/* Responsive */
 @media screen and (max-width: 736px) {
-    .inventory-container {
-        flex-direction: column;
+    .item-display-section {
+        padding: 2rem 1.5rem;
     }
-    .inventory-left-panel {
-        border-right: none;
-        border-bottom: 2px solid #fff;
-        width: 100%;
+
+    .inventory-content {
+        grid-template-columns: 1fr;
     }
-    
+
+    .inventory-content .item-list {
+        grid-template-columns: 1fr;
+    }
+
+    .tab-link {
+        font-size: 0.7rem;
+        padding: 0 0.75rem;
+        height: 2.25rem;
+        line-height: 2.25rem;
+    }
 }
